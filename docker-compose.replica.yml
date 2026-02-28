@@ -1,0 +1,238 @@
+# AgentRecall MCP Server - 读写分离配置
+#
+# 适用场景: 数据量 1000万-1亿条，读多写少
+# 使用方法: docker-compose -f docker-compose.replica.yml up -d
+#
+# 架构:
+# - 1个主库 (写入)
+# - 2个从库 (读取)
+# - pgpool-II (负载均衡)
+
+version: '3.8'
+
+services:
+  mcp-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: agentrecall-mcp
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1G
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # 通过 pgpool 连接
+      - DATABASE_URL=postgresql://agentrecall:${DB_PASSWORD}@pgpool:5432/agentrecall
+      - DB_PRIMARY_HOST=postgres-primary
+      - DB_REPLICA_HOST=pgpool
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - OTP_MASTER_KEY=${OTP_MASTER_KEY}
+    volumes:
+      - ./server/logs:/app/logs
+    depends_on:
+      pgpool:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - agentrecall-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL 主库
+  postgres-primary:
+    image: pgvector/pgvector:pg15
+    container_name: agentrecall-db-primary
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+    environment:
+      - POSTGRES_USER=agentrecall
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=agentrecall
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_primary_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./postgresql.replica.conf:/etc/postgresql/postgresql.conf
+    command: >
+      postgres
+      -c shared_preload_libraries='pgvector'
+      -c config_file=/etc/postgresql/postgresql.conf
+      -c wal_level=replica
+      -c max_wal_senders=10
+      -c max_replication_slots=10
+      -c hot_standby=on
+      -c shared_buffers=1GB
+      -c max_connections=200
+    networks:
+      - agentrecall-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentrecall -d agentrecall && psql -U agentrecall -d agentrecall -c 'SELECT 1 FROM pg_extension WHERE extname = \"vector\";' | grep -q 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # PostgreSQL 从库 1
+  postgres-replica-1:
+    image: pgvector/pgvector:pg15
+    container_name: agentrecall-db-replica-1
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 3G
+    environment:
+      - POSTGRES_USER=agentrecall
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=agentrecall
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_replica1_data:/var/lib/postgresql/data
+    command: >
+      postgres
+      -c hot_standby=on
+      -c shared_buffers=768MB
+      -c max_connections=150
+    depends_on:
+      - postgres-primary
+    networks:
+      - agentrecall-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentrecall -d agentrecall"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL 从库 2
+  postgres-replica-2:
+    image: pgvector/pgvector:pg15
+    container_name: agentrecall-db-replica-2
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 3G
+    environment:
+      - POSTGRES_USER=agentrecall
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=agentrecall
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_replica2_data:/var/lib/postgresql/data
+    command: >
+      postgres
+      -c hot_standby=on
+      -c shared_buffers=768MB
+      -c max_connections=150
+    depends_on:
+      - postgres-primary
+    networks:
+      - agentrecall-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentrecall -d agentrecall"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Pgpool-II 连接池和负载均衡
+  pgpool:
+    image: pgpool/pgpool:latest
+    container_name: agentrecall-pgpool
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      - PGPOOL_BACKEND_NODES=0:postgres-primary:5432,1:postgres-replica-1:5432,2:postgres-replica-2:5432
+      - PGPOOL_BACKEND_WEIGHTS=0:0,1:1,2:1
+      - PGPOOL_SR_CHECK_USER=agentrecall
+      - PGPOOL_SR_CHECK_PASSWORD=${DB_PASSWORD}
+      - PGPOOL_ENABLE_LOAD_BALANCING=true
+      - PGPOOL_MAX_POOL=100
+      - PGPOOL_CHILD_MAX_CONNECTIONS=100
+      - PGPOOL_CHILD_LIFE_TIME=300
+      - PGPOOL_CLIENT_IDLE_LIMIT=60
+    ports:
+      - "5432:5432"
+    depends_on:
+      - postgres-primary
+      - postgres-replica-1
+      - postgres-replica-2
+    networks:
+      - agentrecall-net
+    healthcheck:
+      test: ["CMD-SHELL", "PGPASSWORD=${DB_PASSWORD} psql -U agentrecall -d agentrecall -h localhost -p 5432 -c 'SELECT 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cluster
+  redis-master:
+    image: redis:7-alpine
+    container_name: agentrecall-redis-master
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    command: >
+      redis-server
+      --maxmemory 800mb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+      --appendfsync everysec
+    volumes:
+      - redis_master_data:/data
+    networks:
+      - agentrecall-net
+
+  nginx:
+    image: nginx:alpine
+    container_name: agentrecall-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./web/dist:/usr/share/nginx/html
+    depends_on:
+      - mcp-server
+    networks:
+      - agentrecall-net
+
+volumes:
+  postgres_primary_data:
+    driver: local
+  postgres_replica1_data:
+    driver: local
+  postgres_replica2_data:
+    driver: local
+  redis_master_data:
+    driver: local
+
+networks:
+  agentrecall-net:
+    driver: bridge

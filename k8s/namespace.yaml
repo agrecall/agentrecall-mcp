@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agentrecall
+  labels:
+    name: agentrecall
+    app: agentrecall-mcp

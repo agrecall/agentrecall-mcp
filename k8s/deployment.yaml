@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agentrecall-mcp
+  namespace: agentrecall
+  labels:
+    app: agentrecall-mcp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: agentrecall-mcp
+  template:
+    metadata:
+      labels:
+        app: agentrecall-mcp
+    spec:
+      containers:
+      - name: mcp-server
+        image: agentrecall/mcp-server:latest
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: agentrecall-config
+              key: NODE_ENV
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: agentrecall-config
+              key: PORT
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: agentrecall-secrets
+              key: DATABASE_URL
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: agentrecall-secrets
+              key: REDIS_URL
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: agentrecall-secrets
+              key: JWT_SECRET
+        - name: OTP_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: agentrecall-secrets
+              key: OTP_MASTER_KEY
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+      volumes:
+      - name: logs
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentrecall-mcp-service
+  namespace: agentrecall
+spec:
+  selector:
+    app: agentrecall-mcp
+  ports:
+  - port: 80
+    targetPort: 3000
+    name: http
+  type: ClusterIP

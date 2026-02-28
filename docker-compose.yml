@@ -1,0 +1,130 @@
+# AgentRecall MCP Server - Docker Compose Configuration
+# 
+# 扩展方案参考 SCALING.md
+# 当前配置适用于: 2核4G, 数据量 < 1000万条
+#
+# 扩展路径:
+# 1. 垂直扩展: 升级硬件配置 (cpus/memory)
+# 2. 读写分离: 使用 docker-compose.replica.yml
+# 3. 水平扩展: 使用 Kubernetes 配置 (k8s/)
+
+version: '3.8'
+
+services:
+  mcp-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: agentrecall-mcp
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1G
+        reservations:
+          memory: 512M
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://agentrecall:${DB_PASSWORD}@postgres:5432/agentrecall?sslmode=disable
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - OTP_MASTER_KEY=${OTP_MASTER_KEY}
+    volumes:
+      - ./server/logs:/app/logs
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - agentrecall-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  postgres:
+    # 使用 pgvector 官方镜像，PostgreSQL 15 版本
+    # pgvector 扩展已预装，启动时会自动加载
+    image: pgvector/pgvector:pg15
+    container_name: agentrecall-db
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1500M
+    environment:
+      - POSTGRES_USER=agentrecall
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=agentrecall
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - agentrecall-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentrecall -d agentrecall"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: agentrecall-redis
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    command: >
+      redis-server
+      --maxmemory 400mb
+      --maxmemory-policy allkeys-lru
+      --appendonly no
+      --save ""
+    volumes:
+      - redis_data:/data
+    networks:
+      - agentrecall-net
+
+  nginx:
+    image: nginx:alpine
+    container_name: agentrecall-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./web/dist:/usr/share/nginx/html
+      - ./web/admin:/usr/share/nginx/html/admin
+    # 确保静态文件目录权限正确
+    command: >
+      sh -c "chmod -R 755 /usr/share/nginx/html && nginx -g 'daemon off;'"
+    depends_on:
+      - mcp-server
+    networks:
+      - agentrecall-net
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  agentrecall-net:
+    driver: bridge
