@@ -65,6 +65,13 @@ body {
 }
 
 /* Login Page */
+#login-page,
+#register-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
 .login-header {
     position: fixed;
     top: 0;
@@ -76,6 +83,14 @@ body {
     justify-content: space-between;
     align-items: center;
     z-index: 100;
+}
+
+.login-container-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
 .back-link {
@@ -134,8 +149,8 @@ body {
 }
 
 .login-container {
+    width: 100%;
     max-width: 400px;
-    margin: 120px auto 40px;
     padding: 40px;
     background: var(--bg-card);
     border-radius: var(--radius);
@@ -187,9 +202,23 @@ body {
 }
 
 .form-group input:focus,
-.form-group select:focus {
+.form-group input:focus {
     outline: none;
     border-color: var(--primary-color);
+}
+
+.form-group .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.form-group .checkbox-label input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
 }
 
 .checkbox-group {
@@ -274,6 +303,7 @@ body {
 /* Main Layout */
 #main-page {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
 }
 
@@ -290,7 +320,6 @@ body {
     z-index: 1000;
     padding: 0 1rem;
     align-items: center;
-    justify-content: space-between;
 }
 
 .mobile-menu-toggle {
@@ -300,9 +329,13 @@ body {
     font-size: 1.5rem;
     cursor: pointer;
     padding: 0.5rem;
+    z-index: 1;
 }
 
 .mobile-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     font-weight: 600;
     font-size: 1.125rem;
 }
@@ -311,6 +344,8 @@ body {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    margin-left: auto;
+    z-index: 1;
 }
 
 .mobile-controls .lang-selector {
@@ -350,10 +385,13 @@ body {
     display: flex;
     flex-direction: column;
     position: fixed;
+    top: 0;
+    left: 0;
     height: 100vh;
     border-right: 1px solid var(--border-color);
-    transition: var(--transition);
-    z-index: 100;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1001;
+    box-shadow: var(--shadow-lg);
 }
 
 .sidebar-header {
@@ -385,6 +423,7 @@ body {
     flex: 1;
     padding: 16px 0;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .nav-item {
@@ -416,6 +455,7 @@ body {
 .sidebar-footer {
     padding: 16px 20px;
     border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
 }
 
 .user-info {
@@ -453,9 +493,8 @@ body {
     margin-left: 260px;
     padding: 32px;
     overflow-y: auto;
-    min-height: 100vh;
     background: var(--bg-primary);
-    transition: var(--transition);
+    transition: margin-left 0.3s ease, padding 0.3s ease;
 }
 
 .content-page h1 {
@@ -542,6 +581,17 @@ body {
     padding: 16px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+/* Table container with horizontal scroll */
+.table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
 }
 
 .data-table th {
@@ -716,6 +766,7 @@ body {
     justify-content: center;
     z-index: 1000;
     padding: 1rem;
+    overflow: auto;
 }
 
 .modal-content {
@@ -729,10 +780,24 @@ body {
     position: relative;
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-lg);
+    transform: translateY(0);
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .modal-large {
     max-width: 800px;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 20px;
+        margin: 16px;
+        max-height: 90vh;
+    }
+    
+    .modal-large {
+        max-width: calc(100% - 32px);
+    }
 }
 
 .modal-header {
@@ -859,12 +924,36 @@ body {
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
+/* Large devices (desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Medium devices (tablets, 992px to 1199px) */
+@media (max-width: 1199px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
     .usage-stats {
         grid-template-columns: 1fr;
     }
 }
 
+/* Small devices (tablets, 768px to 991px) */
+@media (max-width: 991px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .main-content {
+        padding: 24px;
+    }
+}
+
+/* Extra small devices (phones, less than 768px) */
 @media (max-width: 768px) {
     .mobile-header {
         display: flex;
@@ -880,19 +969,28 @@ body {
         transform: translateX(-100%);
         width: 280px;
         z-index: 1001;
+        height: 100vh;
+        overflow-y: auto;
     }
     
     .sidebar.active {
         transform: translateX(0);
+        box-shadow: var(--shadow-lg);
     }
     
     .sidebar-close {
         display: block;
     }
     
+    /* Move login container up on mobile */
+    .login-container-wrapper {
+        margin-top: -40px;
+    }
+    
     .main-content {
         margin-left: 0;
         padding: 80px 16px 16px;
+        min-height: 100vh;
     }
     
     #main-page {
@@ -901,6 +999,18 @@ body {
     
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+    
+    .usage-stats {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .chart-container,
+    .top-endpoints {
+        padding: 16px;
+        overflow-x: auto;
     }
     
     .login-container {
@@ -910,7 +1020,7 @@ body {
     
     .login-header {
         position: relative;
-        padding: 1rem;
+        padding: 0.5rem 1rem;
         background: var(--bg-primary);
     }
     
@@ -921,29 +1031,35 @@ body {
     
     .apikey-actions {
         width: 100%;
+        justify-content: space-between;
     }
     
     .apikey-actions .btn {
         flex: 1;
+        margin: 0 4px;
     }
     
     .page-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 12px;
     }
     
     .filter-bar {
         flex-direction: column;
+        gap: 12px;
     }
     
     .filter-bar input,
     .filter-bar select {
         width: 100%;
+        padding: 12px 16px;
     }
     
     .modal-content {
         padding: 20px;
         margin: 16px;
+        max-height: 90vh;
     }
     
     .checkbox-group {
@@ -953,6 +1069,11 @@ body {
     
     .apikey-display {
         flex-direction: column;
+        gap: 8px;
+    }
+    
+    .apikey-display .btn {
+        width: 100%;
     }
 }
 
@@ -1017,11 +1138,11 @@ body {
         height: 100%;
         max-height: 100vh;
         overflow-y: auto;
-        padding-bottom: 80px;
+        padding-bottom: 20px;
     }
     
     .sidebar-footer {
-        padding-bottom: 100px;
+        padding-bottom: 20px;
     }
 }
 

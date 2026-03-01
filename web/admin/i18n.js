@@ -30,6 +30,7 @@ const i18n = {
         login_now: 'Login now',
         fill_all_fields: 'Please fill in all fields',
         password_too_short: 'Password must be at least 8 characters',
+        remember_password: 'Remember Password',
         
         // Sidebar
         dashboard: 'Dashboard',
@@ -157,6 +158,7 @@ const i18n = {
         login_now: '立即登录',
         fill_all_fields: '请填写所有字段',
         password_too_short: '密码至少需要8个字符',
+        remember_password: '记住密码',
         
         // Sidebar
         dashboard: '仪表盘',
@@ -284,6 +286,7 @@ const i18n = {
         login_now: '立即登錄',
         fill_all_fields: '請填寫所有字段',
         password_too_short: '密碼至少需要8個字符',
+        remember_password: '記住密碼',
         
         // Sidebar
         dashboard: '儀表盤',

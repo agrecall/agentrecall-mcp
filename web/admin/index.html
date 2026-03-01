@@ -23,23 +23,31 @@
                     </button>
                 </div>
             </div>
-            <div class="login-container">
-                <div class="logo">
-                    <h1>&#129302; AgentRecall</h1>
-                    <p data-i18n="admin_title">Admin Panel</p>
+            <div class="login-container-wrapper">
+                <div class="login-container">
+                    <div class="logo">
+                        <h1>&#129302; AgentRecall</h1>
+                        <p data-i18n="admin_title">Admin Panel</p>
+                    </div>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label data-i18n="email">Email</label>
+                            <input type="email" id="login-email" placeholder="admin@agentrecall.io" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="password">Password</label>
+                            <input type="password" id="login-password" placeholder="Enter password" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="remember-password">
+                                <span data-i18n="remember_password">Remember Password</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" data-i18n="login">Login</button>
+                    </form>
+                    <p class="register-link"><span data-i18n="no_account">No account?</span> <a href="#" id="show-register" data-i18n="register_now">Register now</a></p>
                 </div>
-                <form id="login-form">
-                    <div class="form-group">
-                        <label data-i18n="email">Email</label>
-                        <input type="email" id="login-email" placeholder="admin@agentrecall.io" required>
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="password">Password</label>
-                        <input type="password" id="login-password" placeholder="Enter password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block" data-i18n="login">Login</button>
-                </form>
-                <p class="register-link"><span data-i18n="no_account">No account?</span> <a href="#" id="show-register" data-i18n="register_now">Register now</a></p>
             </div>
         </div>
 
@@ -58,27 +66,29 @@
                     </button>
                 </div>
             </div>
-            <div class="login-container">
-                <div class="logo">
-                    <h1>&#129302; AgentRecall</h1>
-                    <p data-i18n="create_account">Create New Account</p>
+            <div class="login-container-wrapper">
+                <div class="login-container">
+                    <div class="logo">
+                        <h1>&#129302; AgentRecall</h1>
+                        <p data-i18n="create_account">Create New Account</p>
+                    </div>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label data-i18n="username">Username</label>
+                            <input type="text" id="register-username" placeholder="Enter username" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="email">Email</label>
+                            <input type="email" id="register-email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="password">Password</label>
+                            <input type="password" id="register-password" placeholder="At least 8 characters" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" data-i18n="register">Register</button>
+                    </form>
+                    <p class="register-link"><span data-i18n="has_account">Already have an account?</span> <a href="#" id="show-login" data-i18n="login_now">Login now</a></p>
                 </div>
-                <form id="register-form">
-                    <div class="form-group">
-                        <label data-i18n="username">Username</label>
-                        <input type="text" id="register-username" placeholder="Enter username" required>
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="email">Email</label>
-                        <input type="email" id="register-email" placeholder="your@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="password">Password</label>
-                        <input type="password" id="register-password" placeholder="At least 8 characters" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block" data-i18n="register">Register</button>
-                </form>
-                <p class="register-link"><span data-i18n="has_account">Already have an account?</span> <a href="#" id="show-login" data-i18n="login_now">Login now</a></p>
             </div>
         </div>
 

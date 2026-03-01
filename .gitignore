@@ -7,7 +7,7 @@ package-lock.json
 yarn.lock
 
 # Build output
-dist/
+# dist/
 build/
 *.tsbuildinfo
 

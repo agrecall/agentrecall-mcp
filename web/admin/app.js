@@ -709,16 +709,40 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Login form
     var loginForm = document.getElementById('login-form');
     if (loginForm) {
+        // Load saved credentials if they exist
+        var savedEmail = localStorage.getItem('rememberedEmail');
+        var savedPassword = localStorage.getItem('rememberedPassword');
+        var rememberCheckbox = document.getElementById('remember-password');
+        
+        if (savedEmail && savedPassword) {
+            var emailInput = document.getElementById('login-email');
+            var passwordInput = document.getElementById('login-password');
+            if (emailInput) emailInput.value = savedEmail;
+            if (passwordInput) passwordInput.value = savedPassword;
+            if (rememberCheckbox) rememberCheckbox.checked = true;
+        }
+        
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             var emailInput = document.getElementById('login-email');
             var passwordInput = document.getElementById('login-password');
+            var rememberCheckbox = document.getElementById('remember-password');
             var email = emailInput ? emailInput.value : '';
             var password = passwordInput ? passwordInput.value : '';
+            var remember = rememberCheckbox ? rememberCheckbox.checked : false;
             
             if (!email || !password) {
                 alert(t('fill_all_fields'));
                 return;
+            }
+            
+            // Save or clear credentials based on checkbox
+            if (remember) {
+                localStorage.setItem('rememberedEmail', email);
+                localStorage.setItem('rememberedPassword', password);
+            } else {
+                localStorage.removeItem('rememberedEmail');
+                localStorage.removeItem('rememberedPassword');
             }
             
             try {
