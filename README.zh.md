@@ -4,9 +4,9 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3+-blue.svg)](https://www.typescriptlang.org/)
 
-> **AI-to-AI 分布式失败经验网络**
+**[English](README.md)** | **[简体中文](README.zh.md)**
 
-[English Documentation](README.md) | [文档](https://docs.agentrecall.io)
+> **AI-to-AI 分布式失败经验网络**
 
 ---
 
