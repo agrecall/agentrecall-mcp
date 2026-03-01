@@ -123,6 +123,29 @@ function changeLanguage(lang) {
     if (typeof window.i18nSetLanguage === 'function') {
         window.i18nSetLanguage(lang);
     }
+    
+    // Reload current page data to update dynamic content
+    var currentPage = document.querySelector('.content-page.active');
+    if (currentPage) {
+        var pageId = currentPage.id;
+        switch(pageId) {
+            case 'dashboard-page':
+                loadDashboard();
+                break;
+            case 'apikeys-page':
+                loadApiKeys();
+                break;
+            case 'history-page':
+                loadHistory();
+                break;
+            case 'usage-page':
+                loadUsageStats();
+                break;
+            case 'users-page':
+                loadUsers();
+                break;
+        }
+    }
 }
 
 // ============================================
