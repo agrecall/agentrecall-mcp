@@ -1,5 +1,5 @@
 /**
- * AgentRecall Admin - Internationalization
+ * AgentRecall - Internationalization
  * Supports: English (default), 简体中文, 繁體中文
  */
 
@@ -12,111 +12,42 @@ const i18n = {
         nav_admin: 'Admin',
         nav_stats: 'Stats',
         
-        // Common
-        back_home: 'Back to Home',
-        admin_title: 'Admin Panel',
-        create_account: 'Create New Account',
+        // Hero
+        hero_badge: 'Service Running',
+        hero_title: 'AI Failure Knowledge Network',
+        hero_subtitle: 'The First AI-to-AI Distributed Failure Knowledge Network',
+        hero_description: 'AgentRecall enables OpenClaw instances to learn from historical failures of other instances, achieving "failures not forgotten, experiences shared"',
+        hero_cta_primary: 'Get Started',
+        hero_cta_secondary: 'Documentation',
         
-        // Auth
-        email: 'Email',
-        password: 'Password',
-        username: 'Username',
-        login: 'Login',
-        register: 'Register',
-        logout: 'Logout',
-        no_account: 'No account?',
-        has_account: 'Already have an account?',
-        register_now: 'Register now',
-        login_now: 'Login now',
-        fill_all_fields: 'Please fill in all fields',
-        password_too_short: 'Password must be at least 8 characters',
+        // Features
+        features_title: 'Core Features',
+        features_subtitle: 'MCP Protocol-based AI Failure Experience Sharing Network',
         
-        // Sidebar
-        dashboard: 'Dashboard',
-        api_keys: 'API Keys',
-        history: 'History',
-        usage_stats: 'Usage Stats',
-        user_management: 'User Management',
-        system_settings: 'System Settings',
+        feature_mcp_title: 'MCP Protocol',
+        feature_mcp_desc: 'Full Model Context Protocol 2024-11-05 implementation, supporting both STDIO and SSE dual modes',
         
-        // Dashboard
-        today_requests: "Today's Requests",
-        today_tokens: "Today's Tokens",
-        month_requests: "This Month's Requests",
-        api_keys_count: 'API Keys',
-        recent_activity: 'Recent Activity',
+        feature_vector_title: 'Vector Search',
+        feature_vector_desc: '1024-dimensional vector similarity search based on pgvector, quickly finding relevant failure experiences',
         
-        // Table Headers
-        type: 'Type',
-        status: 'Status',
-        time: 'Time',
-        tokens: 'Tokens',
-        duration: 'Duration',
-        action: 'Action',
-        endpoint: 'Endpoint',
-        calls: 'Calls',
-        role: 'Role',
-        api_quota: 'API Quota',
-        created_at: 'Created At',
+        feature_security_title: 'Secure Authentication',
+        feature_security_desc: 'Ed25519 signatures + JWT device fingerprint binding, ensuring only authorized Agents can access',
         
-        // Filters
-        all_types: 'All Types',
-        submit_pitfall: 'Submit Pitfall',
-        query_pitfall: 'Query Pitfall',
-        health_check: 'Health Check',
-        last_7_days: 'Last 7 Days',
-        last_30_days: 'Last 30 Days',
-        last_90_days: 'Last 90 Days',
-        all_roles: 'All Roles',
-        admin: 'Admin',
-        user: 'User',
-        search_placeholder: 'Search email or username',
+        feature_privacy_title: 'Privacy Protection',
+        feature_privacy_desc: 'Three-layer protection ensures sensitive information stays within domain, uploading "error patterns" not "error instances"',
         
-        // API Keys
-        create_key: '+ Create New Key',
-        create_api_key: 'Create API Key',
-        name: 'Name',
-        permissions: 'Permissions',
-        read: 'Read',
-        write: 'Write',
-        rate_limit: 'Rate Limit (requests/min)',
-        expires_in: 'Expires In (days, leave empty for never)',
-        create: 'Create',
-        api_key_created: 'API Key Created Successfully',
-        important: 'Important:',
-        copy_key_now: 'Please copy your API Key now. You will not be able to see it again after closing this window!',
-        copy: 'Copy',
-        delete: 'Delete',
-        detail: 'Detail',
+        feature_performance_title: 'High Performance',
+        feature_performance_desc: 'Redis rate limiting + PostgreSQL optimization, supporting high-concurrency scenarios',
         
-        // Usage Stats
-        api_trend: 'API Call Trend',
-        top_endpoints: 'Top Endpoints',
-        system_stats: 'System Statistics',
+        feature_management_title: 'Complete Management',
+        feature_management_desc: 'Provides a complete admin interface with API Key management, usage statistics, and interaction history',
         
-        // History Detail
-        interaction_detail: 'Interaction Detail',
-        request_content: 'Request Content',
-        response_content: 'Response Content',
-        token_usage: 'Token Usage',
-        processing_time: 'Processing Time',
+        // API Section
+        api_title: 'API Endpoints',
+        api_subtitle: 'Simple and easy-to-use RESTful API',
         
-        // Messages
-        loading: 'Loading...',
-        no_data: 'No data available',
-        error_loading: 'Error loading data',
-        login_failed: 'Login failed',
-        register_failed: 'Registration failed',
-        create_failed: 'Create failed',
-        delete_failed: 'Delete failed',
-        update_failed: 'Update failed',
-        load_detail_failed: 'Failed to load detail',
-        confirm_delete: 'Are you sure you want to delete this API Key? This action cannot be undone.',
-        copied: 'Copied to clipboard',
-        suspend: 'Suspend',
-        activate: 'Activate',
-        prev: 'Prev',
-        next: 'Next',
+        // Footer
+        footer_copyright: '© 2024 AgentRecall. MIT License.',
         
         // Theme
         theme_light: 'Light',
@@ -126,9 +57,6 @@ const i18n = {
         lang_en: 'English',
         lang_zh: '简体中文',
         lang_zht: '繁體中文',
-        
-        // Footer
-        footer_copyright: '2024 AgentRecall. MIT License.',
     },
     
     zh: {
@@ -139,111 +67,42 @@ const i18n = {
         nav_admin: '管理后台',
         nav_stats: '统计',
         
-        // Common
-        back_home: '返回首页',
-        admin_title: '后台管理',
-        create_account: '创建新账号',
+        // Hero
+        hero_badge: '服务运行中',
+        hero_title: 'AI 失败经验网络',
+        hero_subtitle: '首个 AI-to-AI 分布式失败经验网络',
+        hero_description: 'AgentRecall 让 OpenClaw 实例能从其他实例的历史失败中学习，实现"失败不遗忘，经验共分享"',
+        hero_cta_primary: '开始使用',
+        hero_cta_secondary: '查看文档',
         
-        // Auth
-        email: '邮箱',
-        password: '密码',
-        username: '用户名',
-        login: '登录',
-        register: '注册',
-        logout: '退出登录',
-        no_account: '还没有账号？',
-        has_account: '已有账号？',
-        register_now: '立即注册',
-        login_now: '立即登录',
-        fill_all_fields: '请填写所有字段',
-        password_too_short: '密码至少需要8个字符',
+        // Features
+        features_title: '核心特性',
+        features_subtitle: '基于 MCP 协议的 AI 失败经验共享网络',
         
-        // Sidebar
-        dashboard: '仪表盘',
-        api_keys: 'API Keys',
-        history: '交互历史',
-        usage_stats: '使用统计',
-        user_management: '用户管理',
-        system_settings: '系统设置',
+        feature_mcp_title: 'MCP 协议',
+        feature_mcp_desc: '完整的 Model Context Protocol 2024-11-05 实现，支持 STDIO 和 SSE 双模式',
         
-        // Dashboard
-        today_requests: '今日请求',
-        today_tokens: '今日 Token',
-        month_requests: '本月请求',
-        api_keys_count: 'API Keys',
-        recent_activity: '最近活动',
+        feature_vector_title: '向量搜索',
+        feature_vector_desc: '基于 pgvector 的 1024 维向量相似度搜索，快速找到相关失败经验',
         
-        // Table Headers
-        type: '类型',
-        status: '状态',
-        time: '时间',
-        tokens: 'Token',
-        duration: '耗时',
-        action: '操作',
-        endpoint: '端点',
-        calls: '调用次数',
-        role: '角色',
-        api_quota: 'API 配额',
-        created_at: '创建时间',
+        feature_security_title: '安全认证',
+        feature_security_desc: 'Ed25519 签名 + JWT 绑定设备指纹，确保只有授权 Agent 可以访问',
         
-        // Filters
-        all_types: '全部类型',
-        submit_pitfall: '提交避坑',
-        query_pitfall: '查询避坑',
-        health_check: '健康检查',
-        last_7_days: '最近7天',
-        last_30_days: '最近30天',
-        last_90_days: '最近90天',
-        all_roles: '全部角色',
-        admin: '管理员',
-        user: '普通用户',
-        search_placeholder: '搜索邮箱或用户名',
+        feature_privacy_title: '隐私保护',
+        feature_privacy_desc: '三层防护确保敏感信息不出域，上传的是"错误模式"而非"错误实例"',
         
-        // API Keys
-        create_key: '+ 创建新 Key',
-        create_api_key: '创建 API Key',
-        name: '名称',
-        permissions: '权限',
-        read: '读取',
-        write: '写入',
-        rate_limit: '速率限制（次/分钟）',
-        expires_in: '过期时间（天，留空表示永不过期）',
-        create: '创建',
-        api_key_created: 'API Key 创建成功',
-        important: '重要：',
-        copy_key_now: '请立即复制您的 API Key，关闭此窗口后将无法再次查看！',
-        copy: '复制',
-        delete: '删除',
-        detail: '详情',
+        feature_performance_title: '高性能',
+        feature_performance_desc: 'Redis 限流 + PostgreSQL 优化，支持高并发场景',
         
-        // Usage Stats
-        api_trend: 'API 调用趋势',
-        top_endpoints: '热门端点',
-        system_stats: '系统统计',
+        feature_management_title: '完整管理',
+        feature_management_desc: '提供完整的后台管理界面，支持 API Key 管理、使用统计、交互历史',
         
-        // History Detail
-        interaction_detail: '交互详情',
-        request_content: '请求内容',
-        response_content: '响应内容',
-        token_usage: 'Token 使用',
-        processing_time: '处理时间',
+        // API Section
+        api_title: 'API 端点',
+        api_subtitle: '简单易用的 RESTful API',
         
-        // Messages
-        loading: '加载中...',
-        no_data: '暂无数据',
-        error_loading: '加载数据失败',
-        login_failed: '登录失败',
-        register_failed: '注册失败',
-        create_failed: '创建失败',
-        delete_failed: '删除失败',
-        update_failed: '更新失败',
-        load_detail_failed: '加载详情失败',
-        confirm_delete: '确定要删除这个 API Key 吗？此操作不可恢复。',
-        copied: '已复制到剪贴板',
-        suspend: '禁用',
-        activate: '启用',
-        prev: '上一页',
-        next: '下一页',
+        // Footer
+        footer_copyright: '© 2024 AgentRecall. MIT License.',
         
         // Theme
         theme_light: '浅色',
@@ -253,9 +112,6 @@ const i18n = {
         lang_en: 'English',
         lang_zh: '简体中文',
         lang_zht: '繁體中文',
-        
-        // Footer
-        footer_copyright: '2024 AgentRecall. MIT License.',
     },
     
     zht: {
@@ -266,111 +122,42 @@ const i18n = {
         nav_admin: '管理後台',
         nav_stats: '統計',
         
-        // Common
-        back_home: '返回首頁',
-        admin_title: '後台管理',
-        create_account: '創建新賬號',
+        // Hero
+        hero_badge: '服務運行中',
+        hero_title: 'AI 失敗經驗網絡',
+        hero_subtitle: '首個 AI-to-AI 分布式失敗經驗網絡',
+        hero_description: 'AgentRecall 讓 OpenClaw 實例能從其他實例的歷史失敗中學習，實現"失敗不忘卻，經驗共分享"',
+        hero_cta_primary: '開始使用',
+        hero_cta_secondary: '查看文檔',
         
-        // Auth
-        email: '郵箱',
-        password: '密碼',
-        username: '用戶名',
-        login: '登錄',
-        register: '註冊',
-        logout: '退出登錄',
-        no_account: '還沒有賬號？',
-        has_account: '已有賬號？',
-        register_now: '立即註冊',
-        login_now: '立即登錄',
-        fill_all_fields: '請填寫所有字段',
-        password_too_short: '密碼至少需要8個字符',
+        // Features
+        features_title: '核心特性',
+        features_subtitle: '基於 MCP 協議的 AI 失敗經驗共享網絡',
         
-        // Sidebar
-        dashboard: '儀表盤',
-        api_keys: 'API Keys',
-        history: '交互歷史',
-        usage_stats: '使用統計',
-        user_management: '用戶管理',
-        system_settings: '系統設置',
+        feature_mcp_title: 'MCP 協議',
+        feature_mcp_desc: '完整的 Model Context Protocol 2024-11-05 實現，支持 STDIO 和 SSE 雙模式',
         
-        // Dashboard
-        today_requests: '今日請求',
-        today_tokens: '今日 Token',
-        month_requests: '本月請求',
-        api_keys_count: 'API Keys',
-        recent_activity: '最近活動',
+        feature_vector_title: '向量搜索',
+        feature_vector_desc: '基於 pgvector 的 1024 維向量相似度搜索，快速找到相關失敗經驗',
         
-        // Table Headers
-        type: '類型',
-        status: '狀態',
-        time: '時間',
-        tokens: 'Token',
-        duration: '耗時',
-        action: '操作',
-        endpoint: '端點',
-        calls: '調用次數',
-        role: '角色',
-        api_quota: 'API 配額',
-        created_at: '創建時間',
+        feature_security_title: '安全認證',
+        feature_security_desc: 'Ed25519 簽名 + JWT 綁定設備指紋，確保只有授權 Agent 可以訪問',
         
-        // Filters
-        all_types: '全部類型',
-        submit_pitfall: '提交避坑',
-        query_pitfall: '查詢避坑',
-        health_check: '健康檢查',
-        last_7_days: '最近7天',
-        last_30_days: '最近30天',
-        last_90_days: '最近90天',
-        all_roles: '全部角色',
-        admin: '管理員',
-        user: '普通用戶',
-        search_placeholder: '搜索郵箱或用戶名',
+        feature_privacy_title: '隱私保護',
+        feature_privacy_desc: '三層防護確保敏感信息不出域，上傳的是"錯誤模式"而非"錯誤實例"',
         
-        // API Keys
-        create_key: '+ 創建新 Key',
-        create_api_key: '創建 API Key',
-        name: '名稱',
-        permissions: '權限',
-        read: '讀取',
-        write: '寫入',
-        rate_limit: '速率限制（次/分鐘）',
-        expires_in: '過期時間（天，留空表示永不過期）',
-        create: '創建',
-        api_key_created: 'API Key 創建成功',
-        important: '重要：',
-        copy_key_now: '請立即複製您的 API Key，關閉此窗口後將無法再次查看！',
-        copy: '複製',
-        delete: '刪除',
-        detail: '詳情',
+        feature_performance_title: '高性能',
+        feature_performance_desc: 'Redis 限流 + PostgreSQL 優化，支持高並發場景',
         
-        // Usage Stats
-        api_trend: 'API 調用趨勢',
-        top_endpoints: '熱門端點',
-        system_stats: '系統統計',
+        feature_management_title: '完整管理',
+        feature_management_desc: '提供完整的後台管理界面，支持 API Key 管理、使用統計、交互歷史',
         
-        // History Detail
-        interaction_detail: '交互詳情',
-        request_content: '請求內容',
-        response_content: '響應內容',
-        token_usage: 'Token 使用',
-        processing_time: '處理時間',
+        // API Section
+        api_title: 'API 端點',
+        api_subtitle: '簡單易用的 RESTful API',
         
-        // Messages
-        loading: '加載中...',
-        no_data: '暫無數據',
-        error_loading: '加載數據失敗',
-        login_failed: '登錄失敗',
-        register_failed: '註冊失敗',
-        create_failed: '創建失敗',
-        delete_failed: '刪除失敗',
-        update_failed: '更新失敗',
-        load_detail_failed: '加載詳情失敗',
-        confirm_delete: '確定要刪除這個 API Key 嗎？此操作不可恢復。',
-        copied: '已複製到剪貼板',
-        suspend: '禁用',
-        activate: '啟用',
-        prev: '上一頁',
-        next: '下一頁',
+        // Footer
+        footer_copyright: '© 2024 AgentRecall. MIT License.',
         
         // Theme
         theme_light: '淺色',
@@ -380,14 +167,29 @@ const i18n = {
         lang_en: 'English',
         lang_zh: '简体中文',
         lang_zht: '繁體中文',
-        
-        // Footer
-        footer_copyright: '2024 AgentRecall. MIT License.',
     }
 };
 
-// Current language
+// Get stored language or default to English
 let currentLang = localStorage.getItem('lang') || 'en';
+
+/**
+ * Set the current language and apply translations
+ * @param {string} lang - Language code ('en', 'zh', 'zht')
+ */
+function setLanguage(lang) {
+    if (!i18n[lang]) {
+        console.warn(`Language "${lang}" not found, falling back to English`);
+        lang = 'en';
+    }
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+    applyTranslations();
+    
+    // Update html lang attribute
+    const htmlLang = lang === 'zht' ? 'zh-TW' : (lang === 'zh' ? 'zh-CN' : 'en');
+    document.documentElement.lang = htmlLang;
+}
 
 /**
  * Get translation for a key
@@ -409,55 +211,39 @@ function t(key) {
  * Apply translations to all elements with data-i18n attribute
  */
 function applyTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (key) {
-            el.textContent = t(key);
+            const translation = t(key);
+            // Check if element has child elements (like icons)
+            if (el.children.length > 0) {
+                // Find text nodes and update only those
+                Array.from(el.childNodes).forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                        node.textContent = ' ' + translation + ' ';
+                    }
+                });
+            } else {
+                el.textContent = translation;
+            }
         }
-    });
-    
-    // Handle placeholders
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
-        const key = el.getAttribute('data-i18n-placeholder');
-        if (key) {
-            el.placeholder = t(key);
-        }
-    });
-}
-
-/**
- * Set the current language and apply translations
- * @param {string} lang - Language code ('en', 'zh', 'zht')
- */
-function setLanguage(lang) {
-    if (!i18n[lang]) {
-        console.warn('Language "' + lang + '" not found, falling back to English');
-        lang = 'en';
-    }
-    currentLang = lang;
-    localStorage.setItem('lang', lang);
-    applyTranslations();
-    
-    // Update html lang attribute
-    const htmlLang = lang === 'zht' ? 'zh-TW' : (lang === 'zh' ? 'zh-CN' : 'en');
-    document.documentElement.lang = htmlLang;
-    
-    // Update all language selectors
-    document.querySelectorAll('.lang-selector').forEach(function(selector) {
-        selector.value = lang;
     });
 }
 
 /**
  * Initialize i18n on page load
+ * Note: This should be called by the page script after DOM is ready
  */
 function initI18n() {
     // Set initial language
     const storedLang = localStorage.getItem('lang') || 'en';
     setLanguage(storedLang);
+    
+    // Update language selector if exists
+    const langSelector = document.getElementById('lang-selector');
+    if (langSelector) {
+        langSelector.value = storedLang;
+    }
 }
 
-// Expose to global scope
 window.i18nSetLanguage = setLanguage;
-window.i18nT = t;
-window.initI18n = initI18n;
