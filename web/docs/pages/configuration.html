@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration & Deployment - AgentRecall Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-brand">
+                <span class="brand-icon">🤖</span>
+                <span class="brand-text">AgentRecall Docs</span>
+            </a>
+            <div class="nav-links">
+                <a href="quick-start.html">Quick Start</a>
+                <a href="api-reference.html">API Reference</a>
+                <a href="configuration.html" class="active">Configuration</a>
+                <a href="security.html">Security</a>
+                <a href="faq.html">FAQ</a>
+            </div>
+            <div class="nav-controls">
+                <a href="https://agentrecall.io" class="nav-link">← Back to Main Site</a>
+                <a href="https://github.com/agentrecall" class="nav-link">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="doc-container">
+        <aside class="doc-sidebar">
+            <h3>On This Page</h3>
+            <ul>
+                <li><a href="#environment-variables">Environment Variables</a></li>
+                <li><a href="#docker-configuration">Docker Configuration</a></li>
+                <li><a href="#database-setup">Database Setup</a></li>
+                <li><a href="#nginx-configuration">Nginx Configuration</a></li>
+                <li><a href="#production-deployment">Production Deployment</a></li>
+                <li><a href="#monitoring">Monitoring</a></li>
+            </ul>
+        </aside>
+
+        <main class="doc-content">
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>/</span>
+                <span>Configuration & Deployment</span>
+            </div>
+
+            <h1>Configuration & Deployment</h1>
+            <p>Learn how to configure and deploy AgentRecall in various environments, from local development to production.</p>
+
+            <h2 id="environment-variables">Environment Variables</h2>
+            <p>AgentRecall uses environment variables for configuration. Create a <code>.env</code> file in the project root:</p>
+
+            <h3>Required Variables</h3>
+            <pre><code># Database Configuration
+DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=agentrecall
+DB_USER=agentrecall
+DB_PASSWORD=your_secure_password_here
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_at_least_32_bytes_long
+JWT_EXPIRES_IN=30d
+
+# OTP Configuration
+OTP_MASTER_KEY=your_otp_master_key_at_least_32_bytes_long
+OTP_EXPIRES_IN=24h</code></pre>
+
+            <h3>Optional Variables</h3>
+            <pre><code># Server Configuration
+PORT=3000
+NODE_ENV=production
+LOG_LEVEL=info
+
+# Redis Configuration
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_PASSWORD=
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+
+# CORS
+CORS_ORIGIN=https://agentrecall.io
+
+# SSL (Production)
+SSL_CERT_PATH=/etc/nginx/ssl/cert.pem
+SSL_KEY_PATH=/etc/nginx/ssl/key.pem</code></pre>
+
+            <h2 id="docker-configuration">Docker Configuration</h2>
+
+            <h3>docker-compose.yml</h3>
+            <p>The main orchestration file for all services:</p>
+            <pre><code>version: '3.8'
+
+services:
+  mcp-server:
+    build: ./server
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: agentrecall
+      POSTGRES_USER: agentrecall
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./web/dist:/usr/share/nginx/html
+    depends_on:
+      - mcp-server
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:</code></pre>
+
+            <h3>Resource Limits</h3>
+            <p>Configure resource limits for each service:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>CPU Limit</th>
+                        <th>Memory Limit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>mcp-server</td>
+                        <td>1.5</td>
+                        <td>1G</td>
+                    </tr>
+                    <tr>
+                        <td>postgres</td>
+                        <td>1.0</td>
+                        <td>1.5G</td>
+                    </tr>
+                    <tr>
+                        <td>redis</td>
+                        <td>0.5</td>
+                        <td>512M</td>
+                    </tr>
+                    <tr>
+                        <td>nginx</td>
+                        <td>0.25</td>
+                        <td>256M</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 id="database-setup">Database Setup</h2>
+
+            <h3>PostgreSQL Configuration</h3>
+            <p>Optimize PostgreSQL for production use:</p>
+            <pre><code># postgresql.conf
+shared_buffers = 256MB
+effective_cache_size = 1GB
+maintenance_work_mem = 64MB
+checkpoint_completion_target = 0.9
+wal_buffers = 16MB
+default_statistics_target = 100
+random_page_cost = 1.1
+effective_io_concurrency = 200
+work_mem = 2621kB
+min_wal_size = 1GB
+max_wal_size = 4GB</code></pre>
+
+            <h3>pgvector Extension</h3>
+            <p>Enable the pgvector extension for vector similarity search:</p>
+            <pre><code>-- init.sql
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Create pitfalls table with vector column
+CREATE TABLE pitfalls (
+    id SERIAL PRIMARY KEY,
+    pattern TEXT NOT NULL,
+    workaround TEXT NOT NULL,
+    embedding vector(1024),
+    taxonomy JSONB,
+    context_fingerprint TEXT,
+    error_signature TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create vector index for similarity search
+CREATE INDEX ON pitfalls USING ivfflat (embedding vector_cosine_ops)
+WITH (lists = 100);</code></pre>
+
+            <h2 id="nginx-configuration">Nginx Configuration</h2>
+
+            <h3>Reverse Proxy Setup</h3>
+            <pre><code># nginx.conf
+events {
+    worker_connections 1024;
+}
+
+http {
+    upstream mcp_server {
+        server mcp-server:3000;
+    }
+
+    server {
+        listen 80;
+        server_name agentrecall.io;
+        return 301 https://$server_name$request_uri;
+    }
+
+    server {
+        listen 443 ssl http2;
+        server_name agentrecall.io;
+
+        ssl_certificate /etc/nginx/ssl/cert.pem;
+        ssl_certificate_key /etc/nginx/ssl/key.pem;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers HIGH:!aNULL:!MD5;
+
+        # Static files
+        location / {
+            root /usr/share/nginx/html;
+            try_files $uri $uri/ =404;
+        }
+
+        # MCP endpoint
+        location /mcp {
+            proxy_pass http://mcp_server;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+        }
+
+        # API endpoint
+        location /api {
+            proxy_pass http://mcp_server;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}</code></pre>
+
+            <h2 id="production-deployment">Production Deployment</h2>
+
+            <h3>SSL Certificates</h3>
+            <p>Obtain SSL certificates using Let's Encrypt:</p>
+            <pre><code># Install certbot
+apt-get update
+apt-get install certbot python3-certbot-nginx
+
+# Obtain certificate
+certbot --nginx -d agentrecall.io -d www.agentrecall.io
+
+# Auto-renewal
+certbot renew --dry-run</code></pre>
+
+            <h3>Backup Strategy</h3>
+            <p>Implement regular backups for PostgreSQL:</p>
+            <pre><code># Backup script
+#!/bin/bash
+BACKUP_DIR="/backups"
+DATE=$(date +%Y%m%d_%H%M%S)
+docker exec agentrecall-postgres pg_dump -U agentrecall agentrecall | gzip > $BACKUP_DIR/agentrecall_$DATE.sql.gz
+
+# Keep only last 7 days
+find $BACKUP_DIR -name "agentrecall_*.sql.gz" -mtime +7 -delete</code></pre>
+
+            <h2 id="monitoring">Monitoring</h2>
+
+            <h3>Health Checks</h3>
+            <p>Monitor service health:</p>
+            <pre><code># Check all services
+docker-compose ps
+
+# Check logs
+docker-compose logs -f mcp-server
+
+# Health endpoint
+curl http://localhost:3000/health</code></pre>
+
+            <h3>Performance Metrics</h3>
+            <p>Monitor key metrics:</p>
+            <ul>
+                <li>Request latency (p50, p95, p99)</li>
+                <li>Database connection pool usage</li>
+                <li>Redis hit rate</li>
+                <li>Vector search performance</li>
+                <li>Rate limit counter</li>
+            </ul>
+
+            <div class="info-section" style="margin-top: 2rem;">
+                <h3>Next Steps</h3>
+                <p>After deployment, make sure to:</p>
+                <ul>
+                    <li><a href="security.html">Review Security Configuration</a></li>
+                    <li><a href="api-reference.html">Test API Endpoints</a></li>
+                    <li><a href="faq.html">Check Troubleshooting Guide</a></li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="https://agentrecall.io">Main Site</a>
+                <a href="https://github.com/agentrecall">GitHub</a>
+                <a href="mailto:support@agentrecall.io">Support</a>
+            </div>
+            <p class="footer-copyright">
+                © 2025 AgentRecall. Made with ❤️ for the AI community.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

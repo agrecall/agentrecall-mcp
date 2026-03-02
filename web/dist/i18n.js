@@ -7,6 +7,7 @@ const i18n = {
     en: {
         // Navigation
         nav_home: 'Home',
+        nav_docs: 'Documentation',
         nav_github: 'GitHub',
         nav_getstarted: 'Get Started',
         nav_admin: 'Admin',
@@ -62,6 +63,7 @@ const i18n = {
     zh: {
         // Navigation
         nav_home: '首页',
+        nav_docs: '文档',
         nav_github: 'GitHub',
         nav_getstarted: '开始使用',
         nav_admin: '管理后台',
@@ -117,6 +119,7 @@ const i18n = {
     zht: {
         // Navigation
         nav_home: '首頁',
+        nav_docs: '文檔',
         nav_github: 'GitHub',
         nav_getstarted: '開始使用',
         nav_admin: '管理後台',

@@ -125,7 +125,7 @@ function changeLanguage(lang) {
     }
     
     // Reload current page data to update dynamic content
-    var currentPage = document.querySelector('.content-page.active');
+    var currentPage = document.querySelector('.content-page:not(.hidden)');
     if (currentPage) {
         var pageId = currentPage.id;
         switch(pageId) {

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start - AgentRecall Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-brand">
+                <span class="brand-icon">🤖</span>
+                <span class="brand-text">AgentRecall Docs</span>
+            </a>
+            <div class="nav-links">
+                <a href="quick-start.html" class="active">Quick Start</a>
+                <a href="api-reference.html">API Reference</a>
+                <a href="configuration.html">Configuration</a>
+                <a href="security.html">Security</a>
+                <a href="faq.html">FAQ</a>
+            </div>
+            <div class="nav-controls">
+                <a href="https://agentrecall.io" class="nav-link">← Back to Main Site</a>
+                <a href="https://github.com/agentrecall" class="nav-link">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="doc-container">
+        <aside class="doc-sidebar">
+            <h3>On This Page</h3>
+            <ul>
+                <li><a href="#prerequisites">Prerequisites</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#configuration">Configuration</a></li>
+                <li><a href="#verification">Verification</a></li>
+                <li><a href="#next-steps">Next Steps</a></li>
+            </ul>
+        </aside>
+
+        <main class="doc-content">
+            <div class="breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>/</span>
+                <span>Quick Start</span>
+            </div>
+
+            <h1>Quick Start Guide</h1>
+            <p>Get up and running with AgentRecall in minutes. This guide will walk you through the installation and basic configuration.</p>
+
+            <h2 id="prerequisites">Prerequisites</h2>
+            <p>Before you begin, ensure you have the following installed:</p>
+            <ul>
+                <li><strong>Docker 20.10+</strong> - Container runtime</li>
+                <li><strong>Docker Compose 2.0+</strong> - Multi-container orchestration</li>
+                <li><strong>Git</strong> - Version control (optional, for cloning the repository)</li>
+            </ul>
+
+            <h2 id="installation">Installation</h2>
+
+            <h3>Option 1: Clone from GitHub</h3>
+            <p>Clone the repository and start the services:</p>
+            <pre><code>git clone https://github.com/agentrecall/server.git
+cd server
+cp .env.example .env
+docker-compose up -d</code></pre>
+
+            <h3>Option 2: Download Release</h3>
+            <p>Download the latest release from GitHub:</p>
+            <pre><code>curl -fsSL -o agentrecall.tar.gz \
+  https://github.com/agentrecall/server/releases/latest/download/agentrecall.tar.gz
+tar -xzf agentrecall.tar.gz
+cd agentrecall
+cp .env.example .env
+docker-compose up -d</code></pre>
+
+            <h2 id="configuration">Configuration</h2>
+
+            <h3>Environment Variables</h3>
+            <p>Edit the <code>.env</code> file and set the following required variables:</p>
+            <pre><code># Database Configuration
+DB_PASSWORD=your_secure_password_here
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_at_least_32_bytes_long
+
+# OTP Master Key
+OTP_MASTER_KEY=your_otp_master_key_at_least_32_bytes_long</code></pre>
+
+            <h3>Generate Secure Keys</h3>
+            <p>You can generate secure random keys using OpenSSL:</p>
+            <pre><code># Generate JWT Secret (32 bytes)
+openssl rand -base64 32
+
+# Generate OTP Master Key (32 bytes)
+openssl rand -base64 32</code></pre>
+
+            <h2 id="verification">Verification</h2>
+
+            <h3>Check Service Health</h3>
+            <p>Verify that all services are running correctly:</p>
+            <pre><code># Health check
+curl http://localhost:3000/health
+
+# Expected response
+{
+  "status": "ok",
+  "timestamp": "2025-01-15T10:30:00Z",
+  "services": {
+    "database": "connected",
+    "redis": "connected"
+  }
+}</code></pre>
+
+            <h3>Test MCP Initialization</h3>
+            <p>Test the MCP protocol initialization:</p>
+            <pre><code>curl -X POST http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+      "protocolVersion": "2024-11-05",
+      "clientInfo": {
+        "name": "test-client",
+        "version": "1.0.0"
+      }
+    }
+  }'</code></pre>
+
+            <h3>Access Admin Panel</h3>
+            <p>Navigate to <code>http://localhost/admin/</code> to access the admin panel. You can:</p>
+            <ul>
+                <li>Register a new account</li>
+                <li>Create API keys</li>
+                <li>View usage statistics</li>
+                <li>Manage users (admin only)</li>
+            </ul>
+
+            <h2 id="next-steps">Next Steps</h2>
+            <p>Now that you have AgentRecall running, here are some suggested next steps:</p>
+            <ul>
+                <li><a href="api-reference.html">Explore the API Reference</a> - Learn about all available endpoints and tools</li>
+                <li><a href="configuration.html">Advanced Configuration</a> - Customize your deployment</li>
+                <li><a href="security.html">Security Guide</a> - Understand the security architecture</li>
+                <li><a href="https://github.com/agentrecall/recallplugin">Install RecallPlugin</a> - Integrate with OpenClaw</li>
+            </ul>
+
+            <div class="info-section" style="margin-top: 2rem;">
+                <h3>Need Help?</h3>
+                <p>If you encounter any issues during installation, check our <a href="faq.html">FAQ</a> or reach out to us:</p>
+                <ul>
+                    <li>GitHub Issues: <a href="https://github.com/agentrecall/server/issues">https://github.com/agentrecall/server/issues</a></li>
+                    <li>Email: <a href="mailto:support@agentrecall.io">support@agentrecall.io</a></li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="https://agentrecall.io">Main Site</a>
+                <a href="https://github.com/agentrecall">GitHub</a>
+                <a href="mailto:support@agentrecall.io">Support</a>
+            </div>
+            <p class="footer-copyright">
+                © 2025 AgentRecall. Made with ❤️ for the AI community.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
