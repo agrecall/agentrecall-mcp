@@ -11,9 +11,10 @@
  * - SSE (Server-Sent Events) 支持
  */
 
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { tools, toolHandlers, ToolName } from './tools.js';
+import { verifyApiKey } from '../api/apikeys.js';
 
 // MCP 协议版本
 const MCP_PROTOCOL_VERSION = '2024-11-05';
@@ -197,7 +198,7 @@ async function handleToolsList(): Promise<JSONRPCResponse> {
 /**
  * 处理 Tools/Call 请求
  */
-async function handleToolsCall(params: any): Promise<JSONRPCResponse> {
+async function handleToolsCall(params: any, apiKeyInfo?: any): Promise<JSONRPCResponse> {
   const { name, arguments: args } = params;
   
   if (!name || typeof name !== 'string') {
@@ -238,6 +239,11 @@ async function handleToolsCall(params: any): Promise<JSONRPCResponse> {
         'Invalid tool arguments',
         parseResult.error.errors
       );
+    }
+    
+    // 如果没有 instanceId 但有 API Key 认证，使用 API Key 的 instance_id
+    if (apiKeyInfo && apiKeyInfo.instance_id && !parseResult.data.instanceId) {
+      parseResult.data.instanceId = apiKeyInfo.instance_id;
     }
     
     // 执行工具
@@ -292,6 +298,7 @@ async function handleJSONRPCRequest(request: any, clientId?: string): Promise<JS
   }
   
   const { id, method, params } = parseResult.data;
+  const apiKeyInfo = (parseResult.data as any)._apiKey;  // 从请求中获取 API Key 信息
   
   // 路由到对应的处理器
   switch (method) {
@@ -306,7 +313,7 @@ async function handleJSONRPCRequest(request: any, clientId?: string): Promise<JS
       return handleToolsList();
     
     case 'tools/call':
-      return handleToolsCall(params);
+      return handleToolsCall(params, apiKeyInfo);
     
     case 'ping':
       return createSuccessResponse(id, {});
@@ -406,14 +413,34 @@ export function createMCPRouter(): Router {
   // ============================================
   router.post('/', async (req: Request, res: Response) => {
     try {
+      // API Key 验证
+      const apiKey = req.headers['x-api-key'] as string;
+      if (apiKey) {
+        const apiKeyResult = await verifyApiKey(apiKey);
+        if (apiKeyResult) {
+          (req as any).apiKey = apiKeyResult;
+        }
+      }
+      
       const body = req.body;
       
       // 支持批量请求
       if (Array.isArray(body)) {
-        const responses = await Promise.all(
-          body.map(request => handleJSONRPCRequest(request))
-        );
+        // 将 API Key 信息附加到每个请求
+        const apiKeyInfo = (req as any).apiKey;
+        const requestsWithApiKey = body.map((request: any) => {
+          if (apiKeyInfo) {
+            request._apiKey = apiKeyInfo;
+          }
+          return handleJSONRPCRequest(request);
+        });
+        const responses = await Promise.all(requestsWithApiKey);
         return res.json(responses);
+      }
+      
+      // 将 API Key 信息附加到请求 body
+      if ((req as any).apiKey) {
+        body._apiKey = (req as any).apiKey;
       }
       
       // 单请求
@@ -445,6 +472,15 @@ export function createMCPRouter(): Router {
     const { clientId } = req.params;
     
     try {
+      // API Key 验证
+      const apiKey = req.headers['x-api-key'] as string;
+      if (apiKey) {
+        const apiKeyResult = await verifyApiKey(apiKey);
+        if (apiKeyResult) {
+          (req as any).apiKey = apiKeyResult;
+        }
+      }
+      
       const body = req.body;
       
       // 支持批量请求
