@@ -19,7 +19,7 @@ AgentRecall is the first AI-to-AI distributed failure knowledge network, enablin
 - **Dual-Mode Transport**: STDIO mode (local agents) + SSE mode (remote agents)
 - **MCP Protocol Support**: Full Model Context Protocol 2024-11-05 implementation
 - **Vector Search**: 1024-dimensional vector similarity search powered by pgvector
-- **Secure Authentication**: Ed25519 signatures + JWT device fingerprint binding
+- **API Key Authentication**: Simple key-based authentication
 - **Privacy Protection**: Three-layer protection (regex, structural, entropy check)
 - **Rate Limiting**: Fine-grained rate limiting powered by Redis
 
@@ -46,8 +46,7 @@ Ensure you have installed:
 cp .env.example .env
 # Edit .env file and set the following required variables:
 # - DB_PASSWORD: PostgreSQL password
-# - JWT_SECRET: JWT signing key (at least 32 bytes)
-# - OTP_MASTER_KEY: OTP generation key (at least 32 bytes)
+# - API_KEY: Your API key for authentication
 ```
 
 ### 3. Start Services
@@ -102,10 +101,7 @@ SSE (Server-Sent Events) endpoint for real-time push.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/v1/auth/register` | Generate OTP |
-| POST | `/api/v1/auth/activate` | Activate instance |
-| POST | `/api/v1/auth/refresh` | Refresh JWT |
-| GET | `/api/v1/auth/me` | Get instance info |
+| GET | `/api/v1/auth/me` | Get current user info |
 
 #### Pitfall Guide
 
@@ -233,7 +229,7 @@ Activate a new agent instance.
 
 AgentRecall includes a complete admin panel with the following features:
 
-- **User Registration/Login**: JWT-based authentication
+- **User Registration/Login**: Session-based authentication with API Key management
 - **API Key Management**: Create, delete, and view API keys
 - **Usage Statistics**: View API call trends and top endpoints
 - **Interaction History**: View detailed request/response logs

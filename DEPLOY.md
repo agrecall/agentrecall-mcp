@@ -46,8 +46,7 @@ DB_PASSWORD=your_secure_database_password_here
 # JWT 密钥（至少 32 个字符，用于签名 JWT）
 JWT_SECRET=your_jwt_secret_key_min_32_chars_long_abc123
 
-# OTP 主密钥（至少 32 个字符，用于生成 OTP）
-OTP_MASTER_KEY=your_otp_master_key_min_32_chars_long_xyz789
+# API Key（在管理后台创建后填写）
 ```
 
 ### 3. 一键部署
@@ -171,7 +170,7 @@ nano .env
 ```bash
 DB_PASSWORD=your_generated_db_password
 JWT_SECRET=your_generated_jwt_secret
-OTP_MASTER_KEY=your_generated_otp_key
+# API_KEY=your_api_key_here  # 在管理后台创建
 ```
 
 ### 步骤 4：启动服务
@@ -560,7 +559,7 @@ docker-compose up -d
 
 ## 安全建议
 
-1. **定期更新密码**：每 3 个月更换一次 DB_PASSWORD、JWT_SECRET、OTP_MASTER_KEY
+1. **定期更新密码**：每 3 个月更换一次 DB_PASSWORD、JWT_SECRET
 2. **启用防火墙**：只开放必要的端口（22, 80, 443）
 3. **使用 HTTPS**：生产环境必须启用 SSL/TLS
 4. **定期备份**：设置自动备份任务

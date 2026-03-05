@@ -5,8 +5,7 @@
  * 1. submit_pitfall - 提交避坑指南
  * 2. query_pitfall - 查询相似错误
  * 3. verify_health - 健康检查
- * 4. activate_instance - 实例激活
- */
+  */
 
 import { z } from 'zod';
 import { pool, searchSimilarPitfalls, upsertPitfall } from '../db/index.js';
@@ -41,19 +40,10 @@ const QueryPitfallSchema = z.object({
 // verify_health 输入 Schema
 const VerifyHealthSchema = z.object({}).default({});
 
-// activate_instance 输入 Schema
-const ActivateInstanceSchema = z.object({
-  otp: z.string().min(10).describe('一次性激活码'),
-  deviceFingerprint: z.string().min(1).describe('设备指纹'),
-  publicKey: z.string().min(1).describe('Ed25519 公钥（Base64编码）'),
-  signature: z.string().min(1).describe('对 OTP 的签名（Base64编码）'),
-});
-
-// ============================================
 // Tool 类型定义
 // ============================================
 
-export type ToolName = 'submit_pitfall' | 'query_pitfall' | 'verify_health' | 'activate_instance';
+export type ToolName = 'submit_pitfall' | 'query_pitfall' | 'verify_health';
 
 interface ToolDefinition {
   name: ToolName;
@@ -80,11 +70,6 @@ export const tools: ToolDefinition[] = [
     name: 'verify_health',
     description: '验证服务器健康状态。检查数据库连接和服务可用性。',
     inputSchema: VerifyHealthSchema,
-  },
-  {
-    name: 'activate_instance',
-    description: '激活一个新的 Agent 实例。使用 OTP 和设备指纹完成注册，获取访问令牌。',
-    inputSchema: ActivateInstanceSchema,
   },
 ];
 
@@ -305,121 +290,6 @@ async function handleVerifyHealth(_input: z.infer<typeof VerifyHealthSchema>): P
     };
   }
 }
-
-/**
- * activate_instance 处理器
- * 激活新的 Agent 实例
- */
-async function handleActivateInstance(input: z.infer<typeof ActivateInstanceSchema>): Promise<any> {
-  const startTime = Date.now();
-  
-  try {
-    // 1. 检查 IP 限流（5次/小时）
-    // 注意：实际实现中需要从请求中获取 IP
-    // 这里简化处理
-    
-    // 2. 验证 OTP
-    const otpHash = await hashOTP(input.otp);
-    
-    const otpResult = await pool.query(
-      `SELECT * FROM activation_keys 
-       WHERE otp_hash = $1 AND status = 'pending' AND expires_at > NOW()`,
-      [otpHash]
-    );
-    
-    if (otpResult.rows.length === 0) {
-      return {
-        success: false,
-        error: 'Invalid or expired OTP',
-      };
-    }
-    
-    const otpRecord = otpResult.rows[0];
-    
-    // 3. 验证签名
-    const isValidSignature = verifySignature(
-      input.otp,
-      input.signature,
-      input.publicKey
-    );
-    
-    if (!isValidSignature) {
-      return {
-        success: false,
-        error: 'Invalid signature',
-      };
-    }
-    
-    // 4. 检查设备指纹是否已存在
-    const existingInstance = await pool.query(
-      'SELECT id FROM instances WHERE device_fingerprint = $1',
-      [input.deviceFingerprint]
-    );
-    
-    let instanceId: string;
-    
-    if (existingInstance.rows.length > 0) {
-      // 更新现有实例
-      instanceId = existingInstance.rows[0].id;
-      await pool.query(
-        `UPDATE instances 
-         SET public_key = $1, is_active = TRUE, activated_at = NOW(), updated_at = NOW()
-         WHERE id = $2`,
-        [input.publicKey, instanceId]
-      );
-    } else {
-      // 创建新实例
-      const newInstance = await pool.query(
-        `INSERT INTO instances (device_fingerprint, public_key, is_active, activated_at)
-         VALUES ($1, $2, TRUE, NOW())
-         RETURNING id`,
-        [input.deviceFingerprint, input.publicKey]
-      );
-      instanceId = newInstance.rows[0].id;
-    }
-    
-    // 5. 更新 OTP 状态
-    await pool.query(
-      `UPDATE activation_keys 
-       SET status = 'activated', instance_id = $1, activated_at = NOW()
-       WHERE id = $2`,
-      [instanceId, otpRecord.id]
-    );
-    
-    // 6. 生成 JWT
-    const accessToken = generateJWT(instanceId, input.deviceFingerprint);
-    
-    // 7. 记录激活日志
-    await pool.query(
-      `INSERT INTO submissions (instance_id, action, request_payload, processing_time_ms)
-       VALUES ($1, 'activate', $2, $3)`,
-      [
-        instanceId,
-        JSON.stringify({ deviceFingerprint: input.deviceFingerprint }),
-        Date.now() - startTime,
-      ]
-    );
-    
-    return {
-      success: true,
-      instanceId,
-      accessToken,
-      expiresIn: '30d',
-      processingTime: `${Date.now() - startTime}ms`,
-    };
-  } catch (error) {
-    console.error(JSON.stringify({
-      level: 'error',
-      message: 'activate_instance failed',
-      error: error instanceof Error ? error.message : String(error),
-      timestamp: new Date().toISOString(),
-    }));
-    
-    throw error;
-  }
-}
-
-// ============================================
 // 辅助函数
 // ============================================
 
@@ -442,5 +312,4 @@ export const toolHandlers: Record<ToolName, (input: any) => Promise<any>> = {
   submit_pitfall: handleSubmitPitfall,
   query_pitfall: handleQueryPitfall,
   verify_health: handleVerifyHealth,
-  activate_instance: handleActivateInstance,
 };

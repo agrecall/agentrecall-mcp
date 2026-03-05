@@ -42,8 +42,7 @@ DB_PASSWORD=YourSecurePassword123!
 # JWT 密钥（至少32位）
 JWT_SECRET=YourJWTSecretKeyMustBeAtLeast32CharactersLong
 
-# OTP 主密钥（至少32位）
-OTP_MASTER_KEY=YourOTPMasterKeyMustBeAtLeast32CharactersLong
+# API Key（在管理后台创建）
 ```
 
 ### 3. 目录权限设置
