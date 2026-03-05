@@ -45,59 +45,6 @@ CREATE TRIGGER update_pitfalls_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
--- 2. instances 表：设备指纹和公钥存储
-CREATE TABLE IF NOT EXISTS instances (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    device_fingerprint TEXT UNIQUE NOT NULL,  -- 设备指纹（唯一标识）
-    public_key TEXT NOT NULL,                 -- Ed25519 公钥（Base64编码）
-    name TEXT,                                -- 实例名称（可选）
-    description TEXT,                         -- 实例描述（可选）
-    is_active BOOLEAN DEFAULT FALSE,          -- 是否已激活
-    activated_at TIMESTAMP WITH TIME ZONE,    -- 激活时间
-    last_seen_at TIMESTAMP WITH TIME ZONE,    -- 最后活跃时间
-    metadata JSONB DEFAULT '{}',              -- 额外元数据
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- 创建索引
-CREATE INDEX IF NOT EXISTS idx_instances_fingerprint ON instances(device_fingerprint);
-CREATE INDEX IF NOT EXISTS idx_instances_active ON instances(is_active) WHERE is_active = TRUE;
-
--- 创建更新时间戳触发器
-CREATE TRIGGER update_instances_updated_at
-    BEFORE UPDATE ON instances
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
-
--- 3. activation_keys 表：一次性 OTP 存储
-CREATE TABLE IF NOT EXISTS activation_keys (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    otp_hash TEXT UNIQUE NOT NULL,            -- OTP 的 SHA256 哈希值
-    otp_prefix TEXT,                          -- OTP 前缀（用于显示，如 AR_XXX）
-    status VARCHAR(20) DEFAULT 'pending',     -- 状态: pending, activated, expired, revoked
-    instance_id UUID REFERENCES instances(id) ON DELETE SET NULL,
-    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    activated_at TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- 创建索引
-CREATE INDEX IF NOT EXISTS idx_activation_keys_hash ON activation_keys(otp_hash);
-CREATE INDEX IF NOT EXISTS idx_activation_keys_status ON activation_keys(status);
-CREATE INDEX IF NOT EXISTS idx_activation_keys_expires ON activation_keys(expires_at);
-
--- 创建更新时间戳触发器
-CREATE TRIGGER update_activation_keys_updated_at
-    BEFORE UPDATE ON activation_keys
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
-
--- 4. submissions 表：提交记录（防刷和审计）
-CREATE TABLE IF NOT EXISTS submissions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    instance_id UUID REFERENCES instances(id) ON DELETE SET NULL,
     pitfall_id UUID REFERENCES pitfalls(id) ON DELETE SET NULL,
     action VARCHAR(50) NOT NULL,              -- 动作类型: submit, query, activate
     ip_address INET,                          -- IP 地址（用于限流统计）
@@ -166,18 +113,6 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION get_community_stats()
 RETURNS TABLE (
     total_pitfalls BIGINT,
-    total_instances BIGINT,
-    active_instances BIGINT,
-    total_submissions BIGINT,
-    today_submissions BIGINT,
-    unique_error_patterns BIGINT
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        (SELECT COUNT(*) FROM pitfalls) AS total_pitfalls,
-        (SELECT COUNT(*) FROM instances) AS total_instances,
-        (SELECT COUNT(*) FROM instances WHERE is_active = TRUE) AS active_instances,
         (SELECT COUNT(*) FROM submissions) AS total_submissions,
         (SELECT COUNT(*) FROM submissions WHERE created_at >= CURRENT_DATE) AS today_submissions,
         (SELECT COUNT(DISTINCT error_signature) FROM pitfalls WHERE error_signature IS NOT NULL) AS unique_error_patterns;
