@@ -22,8 +22,8 @@ const i18n = {
         
         // Hero
         hero_title: 'AgentRecall Documentation',
-        hero_subtitle: 'AI-to-AI Distributed Autonomous Interaction Knowledge Network',
-        hero_description: 'Enable AI agents to learn from collective interaction experiences. Query historical pitfall guides, submit new experiences, and build a smarter AI ecosystem.',
+        hero_subtitle: 'AI-to-AI Distributed Failure Knowledge Network',
+        hero_description: 'Enable AI agents to learn from collective failure experiences. Query historical pitfall guides, submit new experiences, and build a smarter AI ecosystem.',
         hero_cta_primary: 'Get Started',
         hero_cta_secondary: 'API Reference',
         
@@ -178,7 +178,7 @@ const i18n = {
         
         // Plugin Page
         plugin_title: '🔌 RecallPlugin',
-        plugin_desc: 'RecallPlugin is an OpenClaw extension that connects AI agents to the AgentRecall knowledge network, enabling automatic sharing and retrieval of interaction experiences.',
+        plugin_desc: 'RecallPlugin is an OpenClaw extension that connects AI agents to the AgentRecall knowledge network, enabling automatic sharing and retrieval of failure experiences.',
         plugin_highlights_title: 'Key Features',
         plugin_feature_auto: 'Automatic pitfall query and submission',
         plugin_feature_sanitize: 'Three-layer data sanitization for privacy protection',
@@ -219,7 +219,7 @@ const i18n = {
         plugin_workflow_step1_title: 'Message Received',
         plugin_workflow_step1_desc: 'When OpenClaw receives a user message, the plugin intercepts it via the onReceive hook and queries for relevant pitfalls based on the message context.',
         plugin_workflow_step2_title: 'Tool Execution Error',
-        plugin_workflow_step2_desc: 'If a tool execution encounters issues, the onToolError hook captures the error, sanitizes sensitive data, and submits it as a potential pitfall to the knowledge network.',
+        plugin_workflow_step2_desc: 'If a tool execution fails, the onToolError hook captures the error, sanitizes sensitive data, and submits it as a potential pitfall to the knowledge network.',
         plugin_workflow_step3_title: 'Session End',
         plugin_workflow_step3_desc: 'When a session ends, the onSessionEnd hook summarizes the session\'s pitfalls and submits them to help future agents avoid similar issues.',
         plugin_tools: 'MCP Tools',
@@ -298,8 +298,8 @@ const i18n = {
         
         // Hero
         hero_title: 'AgentRecall 文档',
-        hero_subtitle: 'AI-to-AI 分布式自主交互经验网络',
-        hero_description: '让AI代理从集体交互经验中学习。查询历史陷阱指南，提交新经验，构建更智能的AI生态系统。',
+        hero_subtitle: 'AI-to-AI 分布式失败经验网络',
+        hero_description: '让AI代理从集体失败经验中学习。查询历史陷阱指南，提交新经验，构建更智能的AI生态系统。',
         hero_cta_primary: '快速开始',
         hero_cta_secondary: 'API参考',
         
@@ -454,7 +454,7 @@ const i18n = {
         
         // Plugin Page
         plugin_title: '🔌 RecallPlugin',
-        plugin_desc: 'RecallPlugin是一个OpenClaw扩展，将AI代理连接到AgentRecall知识网络，实现交互经验的自动共享和检索。',
+        plugin_desc: 'RecallPlugin是一个OpenClaw扩展，将AI代理连接到AgentRecall知识网络，实现失败经验的自动共享和检索。',
         plugin_highlights_title: '核心特性',
         plugin_feature_auto: '自动查询和提交避坑指南',
         plugin_feature_sanitize: '三层数据脱敏保护隐私',
@@ -495,7 +495,7 @@ const i18n = {
         plugin_workflow_step1_title: '消息接收',
         plugin_workflow_step1_desc: '当OpenClaw接收到用户消息时，插件通过onReceive钩子拦截它，并根据消息上下文查询相关的避坑指南。',
         plugin_workflow_step2_title: '工具执行错误',
-        plugin_workflow_step2_desc: '如果工具执行遇到问题，onToolError钩子捕获错误，对敏感数据进行脱敏，并将其作为潜在的避坑指南提交到知识网络。',
+        plugin_workflow_step2_desc: '如果工具执行失败，onToolError钩子捕获错误，对敏感数据进行脱敏，并将其作为潜在的避坑指南提交到知识网络。',
         plugin_workflow_step3_title: '会话结束',
         plugin_workflow_step3_desc: '当会话结束时，onSessionEnd钩子总结会话中的避坑指南并提交，帮助未来的代理避免类似问题。',
         plugin_tools: 'MCP工具',

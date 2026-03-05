@@ -1,106 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quick Start - AgentRecall Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
 </head>
 <body>
+    <!-- Navigation - 与公共首页统一 -->
     <nav class="navbar">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-brand">
-                <span class="brand-icon">🤖</span>
-                <span class="brand-text">AgentRecall Docs</span>
+        <div class="navbar-content">
+            <a href="/docs/" class="navbar-brand">
+                <span>🤖</span>
+                AgentRecall <span class="brand-doc">Doc</span>
             </a>
-            <div class="nav-links">
-                <a href="quick-start.html" class="active">Quick Start</a>
-                <a href="api-reference.html">API Reference</a>
-                <a href="configuration.html">Configuration</a>
-                <a href="security.html">Security</a>
-                <a href="faq.html">FAQ</a>
+            <div class="navbar-nav">
+                <a href="/" class="nav-link" data-i18n="nav_home">Docs</a>
+                <a href="quick-start.html" class="nav-link active" data-i18n="nav_quickstart">Quick Start</a>
+                <a href="api-reference.html" class="nav-link" data-i18n="nav_api">API Reference</a>
+                <a href="security.html" class="nav-link" data-i18n="nav_security">Security</a>
+                <a href="plugins.html" class="nav-link" data-i18n="nav_plugins">Plugins</a>
+                <a href="../../admin/" class="nav-link primary" data-i18n="nav_getstarted">Get Started</a>
             </div>
-            <div class="nav-controls">
-                <a href="https://agentrecall.io" class="nav-link">← Back to Main Site</a>
-                <a href="https://github.com/agentrecall" class="nav-link">GitHub</a>
+            <div class="navbar-controls">
+                <select class="lang-selector" id="lang-selector">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                    <option value="zht">繁體中文</option>
+                </select>
+                <button class="control-btn" id="theme-toggle" title="Toggle Theme">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
             </div>
         </div>
     </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="/" class="nav-link" data-i18n="nav_home">Docs</a>
+        <a href="quick-start.html" class="nav-link active" data-i18n="nav_quickstart">Quick Start</a>
+        <a href="api-reference.html" class="nav-link" data-i18n="nav_api">API Reference</a>
+        <a href="security.html" class="nav-link" data-i18n="nav_security">Security</a>
+        <a href="plugins.html" class="nav-link" data-i18n="nav_plugins">Plugins</a>
+        <a href="../../admin/" class="nav-link primary" data-i18n="nav_getstarted">Get Started</a>
+    </div>
 
     <div class="doc-container">
         <aside class="doc-sidebar">
-            <h3>On This Page</h3>
+            <h3 data-i18n="on_this_page">On This Page</h3>
             <ul>
-                <li><a href="#prerequisites">Prerequisites</a></li>
-                <li><a href="#installation">Installation</a></li>
-                <li><a href="#configuration">Configuration</a></li>
-                <li><a href="#verification">Verification</a></li>
-                <li><a href="#next-steps">Next Steps</a></li>
+                <li><a href="#prerequisites" data-i18n="qs_prerequisites">Prerequisites</a></li>
+                <li><a href="#installation" data-i18n="qs_installation">Installation</a></li>
+                <li><a href="#configuration" data-i18n="qs_configuration">Configuration</a></li>
+                <li><a href="#verification" data-i18n="qs_verification">Verification</a></li>
+                <li><a href="#next-steps" data-i18n="qs_next">Next Steps</a></li>
             </ul>
         </aside>
 
         <main class="doc-content">
             <div class="breadcrumb">
-                <a href="../index.html">Home</a>
+                <a href="../index.html" data-i18n="docs">Docs</a>
                 <span>/</span>
-                <span>Quick Start</span>
+                <span data-i18n="nav_quickstart">Quick Start</span>
             </div>
 
-            <h1>Quick Start Guide</h1>
-            <p>Get up and running with AgentRecall in minutes. This guide will walk you through the installation and basic configuration.</p>
+            <h1 data-i18n="qs_title">Quick Start Guide</h1>
+            <p data-i18n="qs_desc">Get up and running with AgentRecall in minutes. This guide will walk you through the installation and basic configuration.</p>
 
-            <h2 id="prerequisites">Prerequisites</h2>
-            <p>Before you begin, ensure you have the following installed:</p>
+            <h2 id="prerequisites" data-i18n="qs_prerequisites">Prerequisites</h2>
+            <p data-i18n="qs_prerequisites_desc">Before you begin, ensure you have the following installed:</p>
             <ul>
-                <li><strong>Docker 20.10+</strong> - Container runtime</li>
-                <li><strong>Docker Compose 2.0+</strong> - Multi-container orchestration</li>
-                <li><strong>Git</strong> - Version control (optional, for cloning the repository)</li>
+                <li><strong data-i18n="qs_docker">Docker 20.10+</strong> - <span data-i18n="qs_docker_desc">Container runtime</span></li>
+                <li><strong data-i18n="qs_compose">Docker Compose 2.0+</strong> - <span data-i18n="qs_compose_desc">Multi-container orchestration</span></li>
+                <li><strong data-i18n="qs_git">Git</strong> - <span data-i18n="qs_git_desc">Version control (optional, for cloning the repository)</span></li>
             </ul>
 
-            <h2 id="installation">Installation</h2>
+            <h2 id="installation" data-i18n="qs_installation">Installation</h2>
 
-            <h3>Option 1: Clone from GitHub</h3>
-            <p>Clone the repository and start the services:</p>
-            <pre><code>git clone https://github.com/agentrecall/server.git
+            <h3 data-i18n="qs_clone">Option 1: Clone from GitHub</h3>
+            <p data-i18n="qs_clone_desc">Clone the repository and start the services:</p>
+            <pre><code>git clone https://github.com/agrecall/agentrecall-mcp.git
 cd server
 cp .env.example .env
 docker-compose up -d</code></pre>
 
-            <h3>Option 2: Download Release</h3>
-            <p>Download the latest release from GitHub:</p>
+            <h3 data-i18n="qs_download">Option 2: Download Release</h3>
+            <p data-i18n="qs_download_desc">Download the latest release from GitHub:</p>
             <pre><code>curl -fsSL -o agentrecall.tar.gz \
-  https://github.com/agentrecall/server/releases/latest/download/agentrecall.tar.gz
+  https://github.com/agrecall/agentrecall-mcp/releases/latest/download/agentrecall.tar.gz
 tar -xzf agentrecall.tar.gz
 cd agentrecall
 cp .env.example .env
 docker-compose up -d</code></pre>
 
-            <h2 id="configuration">Configuration</h2>
+            <h2 id="configuration" data-i18n="qs_configuration">Configuration</h2>
 
-            <h3>Environment Variables</h3>
-            <p>Edit the <code>.env</code> file and set the following required variables:</p>
-            <pre><code># Database Configuration
+            <h3 data-i18n="qs_env_vars">Environment Variables</h3>
+            <p data-i18n="qs_env_desc">Edit the <code>.env</code> file and set the following required variables:</p>
+            <pre><code># <span data-i18n="qs_db_config">Database Configuration</span>
 DB_PASSWORD=your_secure_password_here
 
-# JWT Configuration
+# <span data-i18n="qs_jwt_config">JWT Configuration</span>
 JWT_SECRET=your_jwt_secret_at_least_32_bytes_long
 
-# OTP Master Key
+# <span data-i18n="qs_otp_config">OTP Master Key</span>
 OTP_MASTER_KEY=your_otp_master_key_at_least_32_bytes_long</code></pre>
 
-            <h3>Generate Secure Keys</h3>
-            <p>You can generate secure random keys using OpenSSL:</p>
+            <h3 data-i18n="qs_gen_keys">Generate Secure Keys</h3>
+            <p data-i18n="qs_gen_keys_desc">You can generate secure random keys using OpenSSL:</p>
             <pre><code># Generate JWT Secret (32 bytes)
 openssl rand -base64 32
 
 # Generate OTP Master Key (32 bytes)
 openssl rand -base64 32</code></pre>
 
-            <h2 id="verification">Verification</h2>
+            <h2 id="verification" data-i18n="qs_verification">Verification</h2>
 
-            <h3>Check Service Health</h3>
-            <p>Verify that all services are running correctly:</p>
+            <h3 data-i18n="qs_health">Check Service Health</h3>
+            <p data-i18n="qs_health_desc">Verify that all services are running correctly:</p>
             <pre><code># Health check
 curl http://localhost:3000/health
 
@@ -114,8 +136,8 @@ curl http://localhost:3000/health
   }
 }</code></pre>
 
-            <h3>Test MCP Initialization</h3>
-            <p>Test the MCP protocol initialization:</p>
+            <h3 data-i18n="qs_mcp_test">Test MCP Initialization</h3>
+            <p data-i18n="qs_mcp_desc">Test the MCP protocol initialization:</p>
             <pre><code>curl -X POST http://localhost:3000/mcp \
   -H "Content-Type: application/json" \
   -d '{
@@ -131,46 +153,65 @@ curl http://localhost:3000/health
     }
   }'</code></pre>
 
-            <h3>Access Admin Panel</h3>
-            <p>Navigate to <code>http://localhost/admin/</code> to access the admin panel. You can:</p>
+            <h3 data-i18n="qs_admin">Access Admin Panel</h3>
+            <p data-i18n="qs_admin_desc">Navigate to the admin panel. You can:</p>
             <ul>
-                <li>Register a new account</li>
-                <li>Create API keys</li>
-                <li>View usage statistics</li>
-                <li>Manage users (admin only)</li>
+                <li data-i18n="qs_admin_register">Register a new account</li>
+                <li data-i18n="qs_admin_keys">Create API keys</li>
+                <li data-i18n="qs_admin_stats">View usage statistics</li>
+                <li data-i18n="qs_admin_users">Manage users (admin only)</li>
             </ul>
 
-            <h2 id="next-steps">Next Steps</h2>
-            <p>Now that you have AgentRecall running, here are some suggested next steps:</p>
+            <h2 id="next-steps" data-i18n="qs_next">Next Steps</h2>
+            <p data-i18n="qs_next_desc">Now that you have AgentRecall running, here are some suggested next steps:</p>
             <ul>
-                <li><a href="api-reference.html">Explore the API Reference</a> - Learn about all available endpoints and tools</li>
-                <li><a href="configuration.html">Advanced Configuration</a> - Customize your deployment</li>
-                <li><a href="security.html">Security Guide</a> - Understand the security architecture</li>
-                <li><a href="https://github.com/agentrecall/recallplugin">Install RecallPlugin</a> - Integrate with OpenClaw</li>
+                <li><a href="api-reference.html"><span data-i18n="qs_next_api">Explore the API Reference</span></a> - <span data-i18n="qs_next_api_desc">Learn about all available endpoints and tools</span></li>
+                <li><a href="configuration.html"><span data-i18n="qs_next_config">Advanced Configuration</span></a> - <span data-i18n="qs_next_config_desc">Customize your deployment</span></li>
+                <li><a href="security.html"><span data-i18n="qs_next_security">Security Guide</span></a> - <span data-i18n="qs_next_security_desc">Understand the security architecture</span></li>
+                <li><a href="https://github.com/agrecall/agentrecall-plugin"><span data-i18n="qs_next_plugin">Install RecallPlugin</span></a> - <span data-i18n="qs_next_plugin_desc">Integrate with OpenClaw</span></li>
             </ul>
 
             <div class="info-section" style="margin-top: 2rem;">
-                <h3>Need Help?</h3>
-                <p>If you encounter any issues during installation, check our <a href="faq.html">FAQ</a> or reach out to us:</p>
+                <h3 data-i18n="qs_help">Need Help?</h3>
+                <p data-i18n="qs_help_desc">If you encounter any issues during installation, check our FAQ or reach out to us:</p>
                 <ul>
-                    <li>GitHub Issues: <a href="https://github.com/agentrecall/server/issues">https://github.com/agentrecall/server/issues</a></li>
+                    <li>GitHub Issues: <a href="https://github.com/agrecall/agentrecall-mcp/issues">https://github.com/agrecall/agentrecall-mcp/issues</a></li>
                     <li>Email: <a href="mailto:support@agentrecall.io">support@agentrecall.io</a></li>
                 </ul>
             </div>
         </main>
     </div>
 
+    <!-- Footer - 与公共首页统一 -->
     <footer class="footer">
-        <div class="footer-container">
+        <div class="footer-content">
             <div class="footer-links">
-                <a href="https://agentrecall.io">Main Site</a>
-                <a href="https://github.com/agentrecall">GitHub</a>
-                <a href="mailto:support@agentrecall.io">Support</a>
+                <a href="../" data-i18n="nav_home">Home</a>
+                <a href="../../admin/" data-i18n="nav_admin">Admin</a>
+                <a href="../../api/v1/pitfalls/stats" data-i18n="nav_stats">Stats</a>
+                <a href="https://github.com/agrecall" target="_blank">GitHub</a>
             </div>
-            <p class="footer-copyright">
-                © 2025 AgentRecall. Made with ❤️ for the AI community.
-            </p>
+            <p class="footer-copyright" data-i18n="footer_copyright">© 2024 AgentRecall. MIT License.</p>
         </div>
     </footer>
+
+    <script src="../js/i18n.js"></script>
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            mobileMenuToggle.textContent = mobileMenu.classList.contains('active') ? '✕' : '☰';
+        });
+        
+        mobileMenu.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                mobileMenuToggle.textContent = '☰';
+            });
+        });
+    </script>
 </body>
 </html>

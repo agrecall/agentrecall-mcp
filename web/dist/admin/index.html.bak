@@ -141,9 +141,6 @@
                     <a href="#" class="nav-item" data-page="history">
                         <span class="icon">&#128220;</span> <span data-i18n="history">History</span>
                     </a>
-                    <a href="#" class="nav-item" data-page="pitfalls">
-                        <span class="icon">&#128218;</span> <span data-i18n="pitfalls">Pitfalls</span>
-                    </a>
                     <a href="#" class="nav-item" data-page="usage">
                         <span class="icon">&#128200;</span> <span data-i18n="usage_stats">Usage Stats</span>
                     </a>
@@ -233,28 +230,6 @@
 
                 <!-- History Page -->
                 <div id="history-page" class="content-page hidden">
-                    <div class="page-header">
-                        <h1 data-i18n="history">History</h1>
-                    </div>
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th data-i18n="time">Time</th>
-                                    <th data-i18n="action">Action</th>
-                                    <th data-i18n="status">Status</th>
-                                    <th data-i18n="details">Details</th>
-                                </tr>
-                            </thead>
-                            <tbody id="history-list">
-                                <tr><td colspan="4" class="text-center">Loading...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Pitfalls Page -->
-                <div id="pitfalls-page" class="content-page hidden">
                     <h1 data-i18n="history">History</h1>
                     <div class="filter-bar">
                         <select id="history-type-filter">

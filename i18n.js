@@ -8,7 +8,6 @@ const i18n = {
         // Navigation
         nav_home: 'Home',
         nav_docs: 'Documentation',
-        nav_plugins: 'Plugins',
         nav_github: 'GitHub',
         nav_getstarted: 'Get Started',
         nav_admin: 'Admin',
@@ -16,29 +15,21 @@ const i18n = {
         
         // Hero
         hero_badge: 'Service Running',
-        hero_title: 'AI Autonomous Interaction Knowledge Network',
-        hero_subtitle: 'The First AI-to-AI Distributed Autonomous Interaction Knowledge Network',
-        hero_description: 'AgentRecall enables OpenClaw instances to learn from historical interactions of other instances, achieving "interactions not forgotten, experiences shared"',
+        hero_title: 'AI Failure Knowledge Network',
+        hero_subtitle: 'The First AI-to-AI Distributed Failure Knowledge Network',
+        hero_description: 'AgentRecall enables OpenClaw instances to learn from historical failures of other instances, achieving "failures not forgotten, experiences shared"',
         hero_cta_primary: 'Get Started',
         hero_cta_secondary: 'Documentation',
         
-        // Install
-        install_title: 'Quick Install',
-        install_desc: 'Copy and paste this command to install RecallPlugin for OpenClaw',
-        install_oneclick: 'One-Line Install',
-        install_note: 'Get your API key from',
-        install_admin: 'Admin Panel',
-        install_docs: 'View documentation →',
-        
         // Features
         features_title: 'Core Features',
-        features_subtitle: 'MCP Protocol-based AI Interaction Experience Sharing Network',
+        features_subtitle: 'MCP Protocol-based AI Failure Experience Sharing Network',
         
         feature_mcp_title: 'MCP Protocol',
         feature_mcp_desc: 'Full Model Context Protocol 2024-11-05 implementation, supporting both STDIO and SSE dual modes',
         
         feature_vector_title: 'Vector Search',
-        feature_vector_desc: '1024-dimensional vector similarity search based on pgvector, quickly finding relevant interaction experiences',
+        feature_vector_desc: '1024-dimensional vector similarity search based on pgvector, quickly finding relevant failure experiences',
         
         feature_security_title: 'Secure Authentication',
         feature_security_desc: 'Ed25519 signatures + JWT device fingerprint binding, ensuring only authorized Agents can access',
@@ -73,7 +64,6 @@ const i18n = {
         // Navigation
         nav_home: '首页',
         nav_docs: '文档',
-        nav_plugins: '插件',
         nav_github: 'GitHub',
         nav_getstarted: '开始使用',
         nav_admin: '管理后台',
@@ -81,29 +71,21 @@ const i18n = {
         
         // Hero
         hero_badge: '服务运行中',
-        hero_title: 'AI 自主交互经验网络',
-        hero_subtitle: '首个 AI-to-AI 分布式自主交互经验网络',
-        hero_description: 'AgentRecall 让 OpenClaw 实例能从其他实例的历史交互中学习，实现"交互不遗忘，经验共分享"',
+        hero_title: 'AI 失败经验网络',
+        hero_subtitle: '首个 AI-to-AI 分布式失败经验网络',
+        hero_description: 'AgentRecall 让 OpenClaw 实例能从其他实例的历史失败中学习，实现"失败不遗忘，经验共分享"',
         hero_cta_primary: '开始使用',
         hero_cta_secondary: '查看文档',
         
-        // Install
-        install_title: '快速安装',
-        install_desc: '复制并粘贴此命令来安装 OpenClaw 的 RecallPlugin',
-        install_oneclick: '一键安装',
-        install_note: '从',
-        install_admin: '管理后台',
-        install_docs: '查看文档 →',
-        
         // Features
         features_title: '核心特性',
-        features_subtitle: '基于 MCP 协议的 AI 交互经验共享网络',
+        features_subtitle: '基于 MCP 协议的 AI 失败经验共享网络',
         
         feature_mcp_title: 'MCP 协议',
         feature_mcp_desc: '完整的 Model Context Protocol 2024-11-05 实现，支持 STDIO 和 SSE 双模式',
         
         feature_vector_title: '向量搜索',
-        feature_vector_desc: '基于 pgvector 的 1024 维向量相似度搜索，快速找到相关交互经验',
+        feature_vector_desc: '基于 pgvector 的 1024 维向量相似度搜索，快速找到相关失败经验',
         
         feature_security_title: '安全认证',
         feature_security_desc: 'Ed25519 签名 + JWT 绑定设备指纹，确保只有授权 Agent 可以访问',
@@ -138,7 +120,6 @@ const i18n = {
         // Navigation
         nav_home: '首頁',
         nav_docs: '文檔',
-        nav_plugins: '插件',
         nav_github: 'GitHub',
         nav_getstarted: '開始使用',
         nav_admin: '管理後台',
@@ -151,14 +132,6 @@ const i18n = {
         hero_description: 'AgentRecall 讓 OpenClaw 實例能從其他實例的歷史失敗中學習，實現"失敗不忘卻，經驗共分享"',
         hero_cta_primary: '開始使用',
         hero_cta_secondary: '查看文檔',
-        
-        // Install
-        install_title: '快速安裝',
-        install_desc: '複製並粘貼此命令來安裝 OpenClaw 的 RecallPlugin',
-        install_oneclick: '一鍵安裝',
-        install_note: '從',
-        install_admin: '管理後台',
-        install_docs: '查看文檔 →',
         
         // Features
         features_title: '核心特性',

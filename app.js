@@ -138,9 +138,6 @@ function changeLanguage(lang) {
             case 'history-page':
                 loadHistory();
                 break;
-            case 'pitfalls-page':
-                loadPitfalls();
-                break;
             case 'usage-page':
                 loadUsageStats();
                 break;
@@ -509,42 +506,6 @@ async function showHistoryDetail(id) {
 }
 
 // ============================================
-// Pitfalls Functions
-// ============================================
-
-async function loadPitfalls() {
-    try {
-        var data = await apiRequest('/api/v1/pitfalls?limit=50');
-        
-        if (data.success) {
-            var list = document.getElementById('pitfalls-list');
-            var count = document.getElementById('pitfall-count');
-            
-            if (count) count.textContent = data.pagination ? data.pagination.total : 0;
-            
-            if (list) {
-                if (data.pitfalls && data.pitfalls.length > 0) {
-                    list.innerHTML = data.pitfalls.map(function(item) {
-                        return '<tr>' +
-                            '<td><strong>' + escapeHtml(item.pattern || '-') + '</strong></td>' +
-                            '<td>' + escapeHtml(item.workaround || '-') + '</td>' +
-                            '<td>' + formatDate(item.lastSeenAt) + '</td>' +
-                            '<td><span class="badge">' + (item.submissionCount || 1) + '</span></td>' +
-                        '</tr>';
-                    }).join('');
-                } else {
-                    list.innerHTML = '<tr><td colspan="4" class="text-center">' + t('no_data') + '</td></tr>';
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Load pitfalls error:', error);
-        var list = document.getElementById('pitfalls-list');
-        if (list) list.innerHTML = '<tr><td colspan="4" class="text-center">Error: ' + error.message + '</td></tr>';
-    }
-}
-
-// ============================================
 // Usage Stats Functions
 // ============================================
 
@@ -906,9 +867,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                     break;
                 case 'history':
                     loadHistory();
-                    break;
-                case 'pitfalls':
-                    loadPitfalls();
                     break;
                 case 'usage':
                     loadUsageStats();

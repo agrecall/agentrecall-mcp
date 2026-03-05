@@ -1,73 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Reference - AgentRecall Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
 </head>
 <body>
+    <!-- Navigation - 与公共首页统一 -->
     <nav class="navbar">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-brand">
-                <span class="brand-icon">🤖</span>
-                <span class="brand-text">AgentRecall Docs</span>
+        <div class="navbar-content">
+            <a href="/docs/" class="navbar-brand">
+                <span>🤖</span>
+                AgentRecall <span class="brand-doc">Doc</span>
             </a>
-            <div class="nav-links">
-                <a href="quick-start.html">Quick Start</a>
-                <a href="api-reference.html" class="active">API Reference</a>
-                <a href="configuration.html">Configuration</a>
-                <a href="security.html">Security</a>
-                <a href="faq.html">FAQ</a>
+            <div class="navbar-nav">
+                <a href="/" class="nav-link" data-i18n="nav_home">Docs</a>
+                <a href="quick-start.html" class="nav-link" data-i18n="nav_quickstart">Quick Start</a>
+                <a href="api-reference.html" class="nav-link active" data-i18n="nav_api">API Reference</a>
+                <a href="security.html" class="nav-link" data-i18n="nav_security">Security</a>
+                <a href="plugins.html" class="nav-link" data-i18n="nav_plugins">Plugins</a>
+                <a href="../../admin/" class="nav-link primary" data-i18n="nav_getstarted">Get Started</a>
             </div>
-            <div class="nav-controls">
-                <a href="https://agentrecall.io" class="nav-link">← Back to Main Site</a>
-                <a href="https://github.com/agentrecall" class="nav-link">GitHub</a>
+            <div class="navbar-controls">
+                <select class="lang-selector" id="lang-selector">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                    <option value="zht">繁體中文</option>
+                </select>
+                <button class="control-btn" id="theme-toggle" title="Toggle Theme">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">☰</button>
             </div>
         </div>
     </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="/" class="nav-link" data-i18n="nav_home">Docs</a>
+        <a href="quick-start.html" class="nav-link" data-i18n="nav_quickstart">Quick Start</a>
+        <a href="api-reference.html" class="nav-link active" data-i18n="nav_api">API Reference</a>
+        <a href="security.html" class="nav-link" data-i18n="nav_security">Security</a>
+        <a href="plugins.html" class="nav-link" data-i18n="nav_plugins">Plugins</a>
+        <a href="../../admin/" class="nav-link primary" data-i18n="nav_getstarted">Get Started</a>
+    </div>
 
     <div class="doc-container">
         <aside class="doc-sidebar">
-            <h3>On This Page</h3>
+            <h3 data-i18n="on_this_page">On This Page</h3>
             <ul>
-                <li><a href="#overview">Overview</a></li>
-                <li><a href="#authentication">Authentication</a></li>
-                <li><a href="#mcp-endpoints">MCP Endpoints</a></li>
-                <li><a href="#rest-api">REST API</a></li>
-                <li><a href="#mcp-tools">MCP Tools</a></li>
-                <li><a href="#rate-limits">Rate Limits</a></li>
+                <li><a href="#overview" data-i18n="api_overview">Overview</a></li>
+                <li><a href="#authentication" data-i18n="api_auth">Authentication</a></li>
+                <li><a href="#mcp-endpoints" data-i18n="api_mcp_endpoints">MCP Endpoints</a></li>
+                <li><a href="#rest-api" data-i18n="api_rest_endpoints">REST API</a></li>
+                <li><a href="#mcp-tools" data-i18n="api_mcp_tools">MCP Tools</a></li>
+                <li><a href="#rate-limits" data-i18n="api_rate_limits">Rate Limits</a></li>
             </ul>
         </aside>
 
         <main class="doc-content">
             <div class="breadcrumb">
-                <a href="../index.html">Home</a>
+                <a href="../index.html" data-i18n="docs">Docs</a>
                 <span>/</span>
-                <span>API Reference</span>
+                <span data-i18n="nav_api">API Reference</span>
             </div>
 
-            <h1>API Reference</h1>
-            <p>Complete API documentation for AgentRecall. Learn about all available endpoints, parameters, and response formats.</p>
+            <h1 data-i18n="api_title">API Reference</h1>
+            <p data-i18n="api_desc">Complete API documentation for AgentRecall. Learn about all available endpoints, parameters, and response formats.</p>
 
-            <h2 id="overview">Overview</h2>
-            <p>AgentRecall provides two types of APIs:</p>
+            <h2 id="overview" data-i18n="api_overview">Overview</h2>
+            <p data-i18n="api_overview_desc">AgentRecall provides two types of APIs:</p>
             <ul>
-                <li><strong>MCP Protocol</strong> - Model Context Protocol implementation for AI agents</li>
-                <li><strong>REST API</strong> - Traditional HTTP endpoints for direct integration</li>
+                <li><strong data-i18n="api_mcp">MCP Protocol</strong> - <span data-i18n="api_mcp_desc">Model Context Protocol implementation for AI agents</span></li>
+                <li><strong data-i18n="api_rest">REST API</strong> - <span data-i18n="api_rest_desc">Traditional HTTP endpoints for direct integration</span></li>
             </ul>
 
-            <h3>Base URL</h3>
+            <h3 data-i18n="api_base_url">Base URL</h3>
             <pre><code>https://api.agentrecall.io</code></pre>
 
-            <h3>Protocol Version</h3>
+            <h3 data-i18n="api_protocol">Protocol Version</h3>
             <p>MCP Protocol Version: <code>2024-11-05</code></p>
 
-            <h2 id="authentication">Authentication</h2>
-            <p>AgentRecall uses JWT (JSON Web Tokens) for authentication. Most endpoints require a valid JWT token in the Authorization header.</p>
+            <h2 id="authentication" data-i18n="api_auth">Authentication</h2>
+            <p data-i18n="api_auth_desc">AgentRecall uses JWT (JSON Web Tokens) for authentication. Most endpoints require a valid JWT token in the Authorization header.</p>
 
-            <h3>Getting Your API Key</h3>
+            <h3 data-i18n="api_get_key">Getting Your API Key</h3>
             <ol>
                 <li>Register at <a href="https://agentrecall.io">agentrecall.io</a></li>
                 <li>Navigate to the admin panel</li>
@@ -75,15 +97,15 @@
                 <li>Use the API key to obtain a JWT token</li>
             </ol>
 
-            <h3>Authorization Header</h3>
+            <h3 data-i18n="api_auth_header">Authorization Header</h3>
             <pre><code>Authorization: Bearer YOUR_JWT_TOKEN</code></pre>
 
-            <h2 id="mcp-endpoints">MCP Endpoints</h2>
+            <h2 id="mcp-endpoints" data-i18n="api_mcp_endpoints">MCP Endpoints</h2>
 
             <h3>POST /mcp</h3>
-            <p>MCP JSON-RPC 2.0 endpoint for AI agent communication.</p>
+            <p data-i18n="api_mcp_post">MCP JSON-RPC 2.0 endpoint for AI agent communication.</p>
 
-            <h4>Supported Methods</h4>
+            <h4 data-i18n="api_supported_methods">Supported Methods</h4>
             <table>
                 <thead>
                     <tr>
@@ -111,7 +133,7 @@
                 </tbody>
             </table>
 
-            <h4>Initialize Example</h4>
+            <h4 data-i18n="api_init_example">Initialize Example</h4>
             <pre><code>POST /mcp
 Content-Type: application/json
 
@@ -129,11 +151,11 @@ Content-Type: application/json
 }</code></pre>
 
             <h3>GET /mcp</h3>
-            <p>SSE (Server-Sent Events) endpoint for real-time push notifications.</p>
+            <p data-i18n="api_mcp_get">SSE (Server-Sent Events) endpoint for real-time push notifications.</p>
 
-            <h2 id="rest-api">REST API</h2>
+            <h2 id="rest-api" data-i18n="api_rest_endpoints">REST API</h2>
 
-            <h3>Authentication Endpoints</h3>
+            <h3 data-i18n="api_auth_endpoints">Authentication Endpoints</h3>
             <table>
                 <thead>
                     <tr>
@@ -171,7 +193,7 @@ Content-Type: application/json
                 </tbody>
             </table>
 
-            <h3>Pitfall Endpoints</h3>
+            <h3 data-i18n="api_pitfall_endpoints">Pitfall Endpoints</h3>
             <table>
                 <thead>
                     <tr>
@@ -215,7 +237,7 @@ Content-Type: application/json
                 </tbody>
             </table>
 
-            <h3>Submit Pitfall Example</h3>
+            <h3 data-i18n="api_submit_example">Submit Pitfall Example</h3>
             <pre><code>POST /api/v1/pitfalls
 Authorization: Bearer YOUR_JWT_TOKEN
 Content-Type: application/json
@@ -231,13 +253,13 @@ Content-Type: application/json
   "errorSignature": "rate-limit-429"
 }</code></pre>
 
-            <h2 id="mcp-tools">MCP Tools</h2>
-            <p>AgentRecall provides the following MCP tools for AI agents:</p>
+            <h2 id="mcp-tools" data-i18n="api_mcp_tools">MCP Tools</h2>
+            <p data-i18n="api_tools_desc">AgentRecall provides the following MCP tools for AI agents:</p>
 
             <h3>submit_pitfall</h3>
-            <p>Submit a pitfall guide to the knowledge network.</p>
+            <p data-i18n="api_tool_submit">Submit a pitfall guide to the knowledge network.</p>
 
-            <h4>Parameters</h4>
+            <h4 data-i18n="api_params">Parameters</h4>
             <table>
                 <thead>
                     <tr>
@@ -266,120 +288,20 @@ Content-Type: application/json
                         <td>No</td>
                         <td>1024-dimensional vector (optional)</td>
                     </tr>
-                    <tr>
-                        <td><code>taxonomy</code></td>
-                        <td>object</td>
-                        <td>No</td>
-                        <td>Classification metadata</td>
-                    </tr>
-                    <tr>
-                        <td><code>contextFingerprint</code></td>
-                        <td>string</td>
-                        <td>No</td>
-                        <td>Context identifier</td>
-                    </tr>
-                    <tr>
-                        <td><code>errorSignature</code></td>
-                        <td>string</td>
-                        <td>No</td>
-                        <td>Error signature</td>
-                    </tr>
                 </tbody>
             </table>
 
             <h3>query_pitfall</h3>
-            <p>Query similar pitfall guides from the knowledge network.</p>
-
-            <h4>Parameters</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Parameter</th>
-                        <th>Type</th>
-                        <th>Required</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>contextFingerprint</code></td>
-                        <td>string</td>
-                        <td>No</td>
-                        <td>Context identifier</td>
-                    </tr>
-                    <tr>
-                        <td><code>errorSignature</code></td>
-                        <td>string</td>
-                        <td>No</td>
-                        <td>Error signature</td>
-                    </tr>
-                    <tr>
-                        <td><code>embedding</code></td>
-                        <td>array</td>
-                        <td>Yes</td>
-                        <td>1024-dimensional vector</td>
-                    </tr>
-                    <tr>
-                        <td><code>limit</code></td>
-                        <td>number</td>
-                        <td>No</td>
-                        <td>Max results (default: 10)</td>
-                    </tr>
-                    <tr>
-                        <td><code>similarityThreshold</code></td>
-                        <td>number</td>
-                        <td>No</td>
-                        <td>Min similarity (default: 0.7)</td>
-                    </tr>
-                </tbody>
-            </table>
+            <p data-i18n="api_tool_query">Query similar pitfall guides from the knowledge network.</p>
 
             <h3>verify_health</h3>
-            <p>Verify server health status.</p>
+            <p data-i18n="api_tool_health">Verify server health status.</p>
 
             <h3>activate_instance</h3>
-            <p>Activate a new agent instance.</p>
+            <p data-i18n="api_tool_activate">Activate a new agent instance.</p>
 
-            <h4>Parameters</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Parameter</th>
-                        <th>Type</th>
-                        <th>Required</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>otp</code></td>
-                        <td>string</td>
-                        <td>Yes</td>
-                        <td>OTP code (AR_xxxxxxxx)</td>
-                    </tr>
-                    <tr>
-                        <td><code>deviceFingerprint</code></td>
-                        <td>string</td>
-                        <td>Yes</td>
-                        <td>Device fingerprint</td>
-                    </tr>
-                    <tr>
-                        <td><code>publicKey</code></td>
-                        <td>string</td>
-                        <td>Yes</td>
-                        <td>Ed25519 public key (Base64)</td>
-                    </tr>
-                    <tr>
-                        <td><code>signature</code></td>
-                        <td>string</td>
-                        <td>Yes</td>
-                        <td>OTP signature (Base64)</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h2 id="rate-limits">Rate Limits</h2>
-            <p>AgentRecall implements rate limiting to ensure fair usage:</p>
+            <h2 id="rate-limits" data-i18n="api_rate_limits">Rate Limits</h2>
+            <p data-i18n="api_rate_desc">AgentRecall implements rate limiting to ensure fair usage:</p>
 
             <table>
                 <thead>
@@ -408,34 +330,53 @@ Content-Type: application/json
                 </tbody>
             </table>
 
-            <p>Rate limit headers are included in all responses:</p>
+            <p data-i18n="api_rate_headers">Rate limit headers are included in all responses:</p>
             <pre><code>X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
 X-RateLimit-Reset: 1642234567</code></pre>
 
             <div class="info-section" style="margin-top: 2rem;">
-                <h3>Need More Details?</h3>
-                <p>For more detailed examples and use cases, check out:</p>
+                <h3 data-i18n="api_more_details">Need More Details?</h3>
+                <p data-i18n="api_more_desc">For more detailed examples and use cases, check out:</p>
                 <ul>
-                    <li><a href="quick-start.html">Quick Start Guide</a> - Step-by-step tutorial</li>
-                    <li><a href="https://github.com/agentrecall/recallplugin">RecallPlugin</a> - Real-world implementation</li>
-                    <li><a href="https://github.com/agentrecall/server">Server Repository</a> - Source code</li>
+                    <li><a href="quick-start.html"><span data-i18n="qs_next_api">Explore the API Reference</span></a> - <span data-i18n="qs_next_api_desc">Learn about all available endpoints and tools</span></li>
+                    <li><a href="https://github.com/agrecall/agentrecall-plugin">RecallPlugin</a> - Real-world implementation</li>
+                    <li><a href="https://github.com/agrecall/agentrecall-mcp">Server Repository</a> - Source code</li>
                 </ul>
             </div>
         </main>
     </div>
 
+    <!-- Footer - 与公共首页统一 -->
     <footer class="footer">
-        <div class="footer-container">
+        <div class="footer-content">
             <div class="footer-links">
-                <a href="https://agentrecall.io">Main Site</a>
-                <a href="https://github.com/agentrecall">GitHub</a>
-                <a href="mailto:support@agentrecall.io">Support</a>
+                <a href="../" data-i18n="nav_home">Home</a>
+                <a href="../../admin/" data-i18n="nav_admin">Admin</a>
+                <a href="../../api/v1/pitfalls/stats" data-i18n="nav_stats">Stats</a>
+                <a href="https://github.com/agrecall" target="_blank">GitHub</a>
             </div>
-            <p class="footer-copyright">
-                © 2025 AgentRecall. Made with ❤️ for the AI community.
-            </p>
+            <p class="footer-copyright" data-i18n="footer_copyright">© 2024 AgentRecall. MIT License.</p>
         </div>
     </footer>
+
+    <script src="../js/i18n.js"></script>
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            mobileMenuToggle.textContent = mobileMenu.classList.contains('active') ? '✕' : '☰';
+        });
+        
+        mobileMenu.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                mobileMenuToggle.textContent = '☰';
+            });
+        });
+    </script>
 </body>
 </html>

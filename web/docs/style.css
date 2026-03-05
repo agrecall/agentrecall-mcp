@@ -99,6 +99,16 @@ body {
     font-size: 1.5rem;
 }
 
+.navbar-brand .brand-doc {
+    font-size: 0.625rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-left: 0.125rem;
+    padding: 0.0625rem 0.375rem;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+}
+
 .navbar-nav {
     display: flex;
     align-items: center;
