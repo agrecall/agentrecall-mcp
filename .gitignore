@@ -58,3 +58,8 @@ temp/
 
 # Test artifacts
 /tmp/agentrecall_*
+
+# Backup files
+*.bak
+*.bak2
+*.orig
