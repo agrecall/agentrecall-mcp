@@ -54,7 +54,7 @@ export async function verifyApiKey(key) {
         return null;
     }
     // 检查 API 配额
-    if (apiKey.api_quota >= 0 && apiKey.api_used >= apiKey.api_quota) {
+    if (apiKey.api_used >= apiKey.api_quota) {
         return null;
     }
     return apiKey;

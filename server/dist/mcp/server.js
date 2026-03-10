@@ -321,10 +321,6 @@ export function createMCPRouter() {
                 }
             }
             const body = req.body;
-            // Check if submit_pitfall requires API key
-            if (body && body.method === 'tools/call' && body.params && (body.params.name === 'submit_pitfall' || body.params.name === 'query_pitfall') && !apiKey) {
-                return res.status(401).json({error: 'API key required for submit_pitfall'});
-            }
             // 支持批量请求
             if (Array.isArray(body)) {
                 // 将 API Key 信息附加到每个请求

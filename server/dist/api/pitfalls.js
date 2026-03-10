@@ -10,8 +10,8 @@
  */
 import { Router } from 'express';
 import { z } from 'zod';
-import { pool, searchSimilarPitfalls, upsertPitfall, getCommunityStats, getRecentPitfalls } from '../db/index.js';
-import { authenticateByAPIKey } from './auth.js';
+import { pool, upsertPitfall, getCommunityStats } from '../db/index.js';
+import { authenticateJWT } from './auth.js';
 import { sanitizeInput } from '../utils/sanitize.js';
 import { checkRateLimit } from '../utils/rate-limit.js';
 // ============================================
@@ -41,7 +41,7 @@ const router = Router();
  * POST /api/v1/pitfalls
  * 提交避坑（需 JWT，限流 10/h）
  */
-router.post('/', authenticateByAPIKey, async (req, res) => {
+router.post('/', authenticateJWT, async (req, res) => {
     const startTime = Date.now();
     try {
         const user = req.user;
@@ -111,109 +111,11 @@ router.post('/', authenticateByAPIKey, async (req, res) => {
  * GET /api/v1/pitfalls/search
  * 向量相似度搜索（余弦距离）
  */
-router.get('/search', async (req, res) => {
-    const startTime = Date.now();
-    try {
-        // 1. 解析查询参数
-        const parseResult = SearchQuerySchema.safeParse(req.query);
-        if (!parseResult.success) {
-            res.status(400).json({
-                success: false,
-                error: 'Invalid query parameters',
-                details: parseResult.error.errors,
-            });
-            return;
-        }
-        const { q, embedding, contextFingerprint, errorSignature, limit, threshold } = parseResult.data;
-        let results = [];
-        // 2. 优先使用向量搜索
-        if (embedding) {
-            try {
-                const embeddingVector = JSON.parse(embedding);
-                if (Array.isArray(embeddingVector) && embeddingVector.length === 1024) {
-                    results = await searchSimilarPitfalls(embeddingVector, threshold, limit);
-                }
-            }
-            catch (e) {
-                console.warn(JSON.stringify({
-                    level: 'warn',
-                    message: 'Invalid embedding format',
-                    timestamp: new Date().toISOString(),
-                }));
-            }
-        }
-        // 3. 如果没有向量结果，尝试使用 errorSignature 搜索
-        if (results.length === 0 && errorSignature) {
-            const signatureResult = await pool.query(`SELECT 
-          id, pattern, workaround, taxonomy,
-          1.0 as similarity, submission_count, last_seen_at
-         FROM pitfalls 
-         WHERE error_signature = $1
-         LIMIT $2`, [errorSignature, limit]);
-            results = signatureResult.rows;
-        }
-        // 4. 如果还没有结果，尝试使用 contextFingerprint 搜索
-        if (results.length === 0 && contextFingerprint) {
-            const fingerprintResult = await pool.query(`SELECT 
-          id, pattern, workaround, taxonomy,
-          0.9 as similarity, submission_count, last_seen_at
-         FROM pitfalls 
-         WHERE context_fingerprint = $1
-         ORDER BY last_seen_at DESC
-         LIMIT $2`, [contextFingerprint, limit]);
-            results = fingerprintResult.rows;
-        }
-        // 5. 如果提供了文本查询，使用文本搜索
-        if (results.length === 0 && q) {
-            const textResult = await pool.query(`SELECT 
-          id, pattern, workaround, taxonomy,
-          similarity(pattern, $1) as similarity, 
-          submission_count, last_seen_at
-         FROM pitfalls 
-         WHERE pattern ILIKE $2 OR workaround ILIKE $2
-         ORDER BY similarity DESC, last_seen_at DESC
-         LIMIT $3`, [q, `%${q}%`, limit]);
-            results = textResult.rows;
-        }
-        // 6. 如果仍然没有结果，返回最近的避坑指南
-        if (results.length === 0) {
-            results = await getRecentPitfalls(limit);
-            // 添加默认相似度
-            results = results.map(r => ({ ...r, similarity: 0 }));
-        }
-        // 7. 返回结果
-        res.json({
-            success: true,
-            count: results.length,
-            pitfalls: results.map(row => ({
-                id: row.id,
-                pattern: row.pattern,
-                workaround: row.workaround,
-                taxonomy: row.taxonomy,
-                similarity: parseFloat(row.similarity) || 0,
-                submissionCount: row.submission_count,
-                lastSeenAt: row.last_seen_at,
-            })),
-            processingTime: `${Date.now() - startTime}ms`,
-        });
-    }
-    catch (error) {
-        console.error(JSON.stringify({
-            level: 'error',
-            message: 'Search pitfalls failed',
-            error: error instanceof Error ? error.message : String(error),
-            timestamp: new Date().toISOString(),
-        }));
-        res.status(500).json({
-            success: false,
-            error: 'Internal server error',
-        });
-    }
+router.get('/search', async (_req, res) => {
+    // 搜索已移除，请使用 MCP query_pitfall
+    res.status(410).json({ success: false, error: 'Search removed. Use MCP query_pitfall.' });
+    return;
 });
-/**
- * GET /api/v1/pitfalls/stats
- * 社区统计
- */
 router.get('/stats', async (_req, res) => {
     const startTime = Date.now();
     try {

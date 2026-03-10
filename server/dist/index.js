@@ -120,7 +120,7 @@ app.get('/health', async (_req, res) => {
 app.use('/mcp', createMCPRouter());
 // REST API
 app.use('/api/v1/auth', authRouter);
-// app.use('/api/v1/pitfalls', pitfallsRouter); // 已禁用，仅通过 MCP 提供
+app.use('/api/v1/pitfalls', pitfallsRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/apikeys', apiKeysRouter);
 app.use('/api/v1/stats', statsRouter);
