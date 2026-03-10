@@ -27,7 +27,7 @@
 ### 1. 下载代码
 
 ```bash
-git clone https://github.com/agentrecall/agentrecall.git
+git clone https://github.com/agrecall/agentrecall-mcp.git
 cd agentrecall
 ```
 
@@ -127,7 +127,7 @@ docker compose version
 
 ```bash
 # 方式 1：Git 克隆
-git clone https://github.com/agentrecall/agentrecall.git
+git clone https://github.com/agrecall/agentrecall-mcp.git
 cd agentrecall
 
 # 方式 2：直接下载
