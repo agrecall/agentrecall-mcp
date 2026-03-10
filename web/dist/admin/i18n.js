@@ -23,14 +23,9 @@ const i18n = {
         username: 'Username',
         login: 'Login',
         register: 'Register',
-        logout: 'Logout',
-        no_account: 'No account?',
-        has_account: 'Already have an account?',
-        register_now: 'Register now',
-        login_now: 'Login now',
-        fill_all_fields: 'Please fill in all fields',
-        password_too_short: 'Password must be at least 8 characters',
+registering: 'Registering...',        register_success: 'Registration successful!',        register_failed: 'Registration failed',        enter_email_first: 'Please enter your email first',        sending: 'Sending...',        code_sent: 'Verification code sent!',        send_code_failed: 'Failed to send code',        network_error: 'Network error',        reset_success: 'Password reset successfully!',        reset_failed: 'Failed to reset password',        resetting: 'Resetting...',        password_mismatch: 'Passwords do not match!',
         remember_password: 'Remember Password',
+forgot_password: 'Forgot Password?',        send_code: 'Send Code',        verification_code: 'Verification Code',        new_password: 'New Password',        confirm_password: 'Confirm Password',        reset_password: 'Reset Password',        reset_password_title: 'Reset Password',        password_reset_success: 'Password reset successfully',        back_login: 'Back to Login',
         
         // Sidebar
         dashboard: 'Dashboard',
@@ -47,6 +42,17 @@ const i18n = {
         api_keys_count: 'API Keys',
         recent_activity: 'Recent Activity',
         
+        // Dashboard API Keys Table
+        api_key_name: 'API Key',
+        api_key_status: 'Status',
+        api_key_permissions: 'Permissions',
+        api_key_usage: 'Usage',
+        api_key_last_used: 'Last Used',
+        active: 'Active',
+        inactive: 'Inactive',
+        copy_key: 'Copy Key',
+        copy_prefix: 'Copy Prefix',
+        
         // Table Headers
         type: 'Type',
         status: 'Status',
@@ -59,11 +65,13 @@ const i18n = {
         role: 'Role',
         api_quota: 'API Quota',
         created_at: 'Created At',
+        pattern: 'Pattern',
+        workaround: 'Workaround',
+        last_seen: 'Last Seen',
+        submissions: 'Submissions',
         
         // Filters
         all_types: 'All Types',
-        submit_pitfall: 'Submit Pitfall',
-        query_pitfall: 'Query Pitfall',
         health_check: 'Health Check',
         last_7_days: 'Last 7 Days',
         last_30_days: 'Last 30 Days',
@@ -94,6 +102,10 @@ const i18n = {
         api_trend: 'API Call Trend',
         top_endpoints: 'Top Endpoints',
         system_stats: 'System Statistics',
+        total_users: 'Total Users',
+        total_api_keys: 'Total API Keys',
+        total_api_calls: 'Total API Calls',
+        today_api_calls: "Today's API Calls",
         
         // History Detail
         interaction_detail: 'Interaction Detail',
@@ -151,6 +163,8 @@ const i18n = {
         username: '用户名',
         login: '登录',
         register: '注册',
+registering: '注册中...',        register_success: '注册成功！',        register_failed: '注册失败',        enter_email_first: '请先输入邮箱',        sending: '发送中...',        code_sent: '验证码已发送！',        send_code_failed: '发送验证码失败',        network_error: '网络错误',        reset_success: '密码重置成功！',        reset_failed: '重置密码失败',        resetting: '重置中...',        password_mismatch: '两次密码不一致！',
+login_failed: '登录失败',        email_registered: '该邮箱已被注册',        registration_disabled: '注册功能已关闭',        rate_limit: '请求过于频繁，请稍后再试',        code_length: '验证码必须为6位',        account_suspended: '账号已被禁用',        code_invalid: '验证码错误',        code_expired: '验证码已过期',        email_not_registered: '该邮箱未注册',
         logout: '退出登录',
         no_account: '还没有账号？',
         has_account: '已有账号？',
@@ -159,6 +173,28 @@ const i18n = {
         fill_all_fields: '请填写所有字段',
         password_too_short: '密码至少需要8个字符',
         remember_password: '记住密码',
+        forgot_password: '忘记密码？',
+        send_code: '发送验证码',
+        verification_code: '验证码',
+        new_password: '新密码',
+        confirm_password: '确认密码',
+        reset_password: '重置密码',
+        reset_password_title: '重置密码',
+        back_login: '返回登录',
+        register_success: '注册成功！',
+        register_failed: '注册失败',
+        registering: '注册中...',
+        enter_email_first: '请先输入邮箱',
+        sending: '发送中...',
+        code_sent: '验证码已发送！',
+        send_code_failed: '发送验证码失败',
+        network_error: '网络错误',
+        reset_success: '密码重置成功！',
+        reset_failed: '重置密码失败',
+        resetting: '重置中...',
+        password_mismatch: '两次密码不一致！',
+login_failed: '登录失败',        email_registered: '该邮箱已被注册',        registration_disabled: '注册功能已关闭',        rate_limit: '请求过于频繁，请稍后再试',        code_length: '验证码必须为6位',        account_suspended: '账号已被禁用',        code_invalid: '验证码错误',        code_expired: '验证码已过期',        email_not_registered: '该邮箱未注册',
+forgot_password: '忘记密码？',        send_code: '发送验证码',        verification_code: '验证码',        new_password: '新密码',        confirm_password: '确认密码',        reset_password: '重置密码',        reset_password_title: '重置密码',        password_reset_success: '密码重置成功',        back_login: '返回登录',
         
         // Sidebar
         dashboard: '仪表盘',
@@ -175,6 +211,17 @@ const i18n = {
         api_keys_count: 'API Keys',
         recent_activity: '最近活动',
         
+        // Dashboard API Keys Table
+        api_key_name: 'API Key',
+        api_key_status: '状态',
+        api_key_permissions: '权限',
+        api_key_usage: '使用次数',
+        api_key_last_used: '最后使用',
+        active: '活跃',
+        inactive: '停用',
+        copy_key: '复制密钥',
+        copy_prefix: '复制前缀',
+        
         // Table Headers
         type: '类型',
         status: '状态',
@@ -187,11 +234,13 @@ const i18n = {
         role: '角色',
         api_quota: 'API 配额',
         created_at: '创建时间',
+        pattern: '模式',
+        workaround: '解决方案',
+        last_seen: '最后出现',
+        submissions: '提交次数',
         
         // Filters
         all_types: '全部类型',
-        submit_pitfall: '提交避坑',
-        query_pitfall: '查询避坑',
         health_check: '健康检查',
         last_7_days: '最近7天',
         last_30_days: '最近30天',
@@ -222,6 +271,10 @@ const i18n = {
         api_trend: 'API 调用趋势',
         top_endpoints: '热门端点',
         system_stats: '系统统计',
+        total_users: '总用户数',
+        total_api_keys: '总 API Keys',
+        total_api_calls: '总 API 调用',
+        today_api_calls: '今日 API 调用',
         
         // History Detail
         interaction_detail: '交互详情',
@@ -279,6 +332,8 @@ const i18n = {
         username: '用戶名',
         login: '登錄',
         register: '註冊',
+registering: '註冊中...',        register_success: '註冊成功！',        register_failed: '註冊失敗',        enter_email_first: '請先輸入郵箱',        sending: '發送中...',        code_sent: '驗證碼已發送！',        send_code_failed: '發送驗證碼失敗',        network_error: '網絡錯誤',        reset_success: '密碼重置成功！',        reset_failed: '重置密碼失敗',        resetting: '重置中...',        password_mismatch: '兩次密碼不一致！',
+login_failed: '登錄失敗',        email_registered: '該郵箱已被註冊',        registration_disabled: '註冊功能已關閉',        rate_limit: '請求過於頻繁，請稍後再試',        code_length: '驗證碼必須為6位',        account_suspended: '賬號已被禁用',        code_invalid: '驗證碼錯誤',        code_expired: '驗證碼已過期',        email_not_registered: '該郵箱未註冊',
         logout: '退出登錄',
         no_account: '還沒有賬號？',
         has_account: '已有賬號？',
@@ -303,6 +358,17 @@ const i18n = {
         api_keys_count: 'API Keys',
         recent_activity: '最近活動',
         
+        // Dashboard API Keys Table
+        api_key_name: 'API Key',
+        api_key_status: '狀態',
+        api_key_permissions: '權限',
+        api_key_usage: '使用次數',
+        api_key_last_used: '最後使用',
+        active: '活躍',
+        inactive: '停用',
+        copy_key: '複製密鑰',
+        copy_prefix: '複製前綴',
+        
         // Table Headers
         type: '類型',
         status: '狀態',
@@ -315,11 +381,13 @@ const i18n = {
         role: '角色',
         api_quota: 'API 配額',
         created_at: '創建時間',
+        pattern: '模式',
+        workaround: '解決方案',
+        last_seen: '最後出現',
+        submissions: '提交次數',
         
         // Filters
         all_types: '全部類型',
-        submit_pitfall: '提交避坑',
-        query_pitfall: '查詢避坑',
         health_check: '健康檢查',
         last_7_days: '最近7天',
         last_30_days: '最近30天',
@@ -350,6 +418,10 @@ const i18n = {
         api_trend: 'API 調用趨勢',
         top_endpoints: '熱門端點',
         system_stats: '系統統計',
+        total_users: '總用戶數',
+        total_api_keys: '總 API Keys',
+        total_api_calls: '總 API 調用',
+        today_api_calls: '今日 API 調用',
         
         // History Detail
         interaction_detail: '交互詳情',

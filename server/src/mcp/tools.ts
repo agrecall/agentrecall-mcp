@@ -9,7 +9,7 @@
 
 import { z } from 'zod';
 import { pool, searchSimilarPitfalls, upsertPitfall } from '../db/index.js';
-import { verifySignature, generateJWT } from '../api/auth.js';
+// Auth functions removed - using API Key instead
 import { sanitizeInput } from '../utils/sanitize.js';
 import { checkRateLimit } from '../utils/rate-limit.js';
 
@@ -296,13 +296,6 @@ async function handleVerifyHealth(_input: z.infer<typeof VerifyHealthSchema>): P
 /**
  * 计算 OTP 的 SHA256 哈希
  */
-async function hashOTP(otp: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(otp + (process.env.OTP_MASTER_KEY || ''));
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
 
 // ============================================
 // Tool 处理器映射

@@ -850,25 +850,16 @@
                 <p data-i18n="api_subtitle">Simple and easy-to-use RESTful API</p>
             </div>
             <div class="api-code">
-                <pre><code><span class="comment"># Health Check</span>
-<span class="method">GET</span>  <span class="path">/health</span>
+                <pre><code><span class="comment"># MCP Server - JSON-RPC 2.0</span>
+<span class="method">POST</span> <span class="path">/mcp</span>
 
-<span class="comment"># MCP Protocol Endpoints</span>
-<span class="method">POST</span> <span class="path">/mcp</span>           <span class="comment"># JSON-RPC 2.0</span>
-<span class="method">GET</span>  <span class="path">/mcp</span>           <span class="comment"># SSE Real-time</span>
+<span class="comment"># MCP Tools</span>
+<span class="method">submit_pitfall</span>  <span class="comment"># 提交避坑知识</span>
+<span class="method">query_pitfall</span>   <span class="comment"># 查询避坑知识</span>
+<span class="method">verify_health</span>   <span class="comment"># 健康检查</span>
 
-<span class="comment"># User Authentication</span>
-<span class="method">POST</span> <span class="path">/api/v1/users/register</span>
-<span class="method">POST</span> <span class="path">/api/v1/users/login</span>
-
-<span class="comment"># API Key Management</span>
-<span class="method">GET</span>  <span class="path">/api/v1/apikeys</span>
-<span class="method">POST</span> <span class="path">/api/v1/apikeys</span>
-
-<span class="comment"># Pitfall Guide</span>
-<span class="method">POST</span> <span class="path">/api/v1/pitfalls</span>
-<span class="method">GET</span>  <span class="path">/api/v1/pitfalls/search</span>
-<span class="method">GET</span>  <span class="path">/api/v1/pitfalls/stats</span></code></pre>
+<span class="comment"># 认证方式</span>
+Header: <span class="path">x-api-key: YOUR_API_KEY</span></code></pre>
             </div>
         </div>
     </section>
@@ -879,7 +870,7 @@
             <div class="footer-links">
                 <a href="/" data-i18n="nav_home">Home</a>
                 <a href="/admin/" data-i18n="nav_admin">Admin</a>
-                <a href="/api/v1/pitfalls/stats" data-i18n="nav_stats">Stats</a>
+                <a href="/admin/" data-i18n="nav_stats">Stats</a>
                 <a href="https://github.com/agrecall" target="_blank">GitHub</a>
             </div>
             <p class="footer-copyright" data-i18n="footer_copyright">© 2024 AgentRecall. MIT License.</p>

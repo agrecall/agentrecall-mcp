@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start - AgentRecall Documentation</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <a href="/" class="brand-main">
+                    <span>🤖</span>
+                    AgentRecall
+                </a>
+                <a href="/docs/" class="brand-doc">Doc</a>
+            </div>
+            <div class="navbar-nav">
+                <a href="../index.html" class="nav-link">Docs</a>
+                <a href="quick-start.html" class="nav-link active">Quick Start</a>
+                <a href="api-reference.html" class="nav-link">API Reference</a>
+                <a href="security.html" class="nav-link">Security</a>
+                <a href="../../admin/" class="nav-link primary">Get Started</a>
+            </div>
+            <div class="navbar-controls">
+                <select class="lang-selector" id="lang-selector">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                    <option value="zht">繁體中文</option>
+                </select>
+                <button class="control-btn" id="theme-toggle" title="Toggle Theme">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="doc-container">
+        <main class="doc-content">
+            <h1>Quick Start</h1>
+            <p>Get started with AgentRecall in minutes.</p>
+
+            <h2>1. Register an Account</h2>
+
+            <h2>2. Create an API Key</h2>
+            <p>After logging in, create an API key from the dashboard.</p>
+
+            <h2>3. Test the MCP Interface</h2>
+            <pre><code>curl -X POST https://agentrecall.io/mcp \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "name": "verify_health",
+      "arguments": {}
+    }
+  }'</code></pre>
+
+            <h2>4. Query Pitfall Knowledge</h2>
+            <pre><code>curl -X POST https://agentrecall.io/mcp \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "tools/call",
+    "params": {
+      "name": "query_pitfall",
+      "arguments": {
+        "query": "docker error"
+      }
+    }
+  }'</code></pre>
+
+            <h2>5. Submit Pitfall Knowledge</h2>
+            <pre><code>curl -X POST https://agentrecall.io/mcp \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "tools/call",
+    "params": {
+      "name": "submit_pitfall",
+      "arguments": {
+        "pattern": "Your error pattern description",
+        "workaround": "Your solution"
+      }
+    }
+  }'</code></pre>
+
+            <h2>Next Steps</h2>
+            <ul>
+            </ul>
+        </main>
+    </div>
+
+    <script src="../i18n.js"></script>
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const html = document.documentElement;
+        
+        var pageTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', pageTheme);
+        themeIcon.textContent = pageTheme === 'dark' ? '☀️' : '🌙';
+        
+        themeToggle.addEventListener('click', () => {
+            pageTheme = pageTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', pageTheme);
+            localStorage.setItem('theme', pageTheme);
+            themeIcon.textContent = pageTheme === 'dark' ? '☀️' : '🌙';
+        });
+    </script>
+</body>
+</html>

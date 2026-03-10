@@ -93,11 +93,23 @@ router.get('/user', authenticateUser, async (req: Request, res: Response) => {
       [user.userId]
     );
     
+    // 获取 Top Endpoints
+    const topEndpointsResult = await pool.query(
+      `SELECT endpoint, COUNT(*) as request_count
+       FROM api_usage_logs
+       WHERE user_id = $1
+       GROUP BY endpoint
+       ORDER BY request_count DESC
+       LIMIT 5`,
+      [user.userId]
+    );
+    
     res.json({
       success: true,
       stats: userStatsResult.rows[0] || null,
       trends: trendResult.rows,
       apiKeys: apiKeyStatsResult.rows,
+      topEndpoints: topEndpointsResult.rows,
     });
   } catch (error) {
     console.error('Get user stats error:', error);
@@ -196,7 +208,7 @@ router.get('/history', authenticateUser, async (req: Request, res: Response) => 
     
     if (requestType) {
       params.push(requestType);
-      whereClause += ` AND ch.request_type = $${params.length}`;
+      whereClause += ` AND ch.endpoint = $${params.length}`;
     }
     
     if (sessionId) {
@@ -206,7 +218,7 @@ router.get('/history', authenticateUser, async (req: Request, res: Response) => 
     
     // 获取总数
     const countResult = await pool.query(
-      `SELECT COUNT(*) FROM chat_history ch ${whereClause}`,
+      `SELECT COUNT(*) FROM api_usage_logs ch ${whereClause}`,
       params
     );
     const total = parseInt(countResult.rows[0].count);
@@ -217,11 +229,11 @@ router.get('/history', authenticateUser, async (req: Request, res: Response) => 
     
     const historyResult = await pool.query(
       `SELECT 
-        ch.id, ch.session_id, ch.request_type, ch.status, 
-        ch.tokens_input, ch.tokens_output, ch.processing_time_ms, ch.created_at,
+        ch.id, ch.endpoint, ch.method, ch.status_code, 
+        ch.duration_ms, ch.created_at,
         u.email as user_email,
         ak.key_name as api_key_name
-       FROM chat_history ch
+       FROM api_usage_logs ch
        LEFT JOIN users u ON ch.user_id = u.id
        LEFT JOIN api_keys ak ON ch.api_key_id = ak.id
        ${whereClause}
@@ -256,7 +268,7 @@ router.get('/history/:id', authenticateUser, async (req: Request, res: Response)
     const { id } = req.params;
     
     // 构建查询条件
-    let query = 'SELECT * FROM chat_history WHERE id = $1';
+    let query = 'SELECT * FROM api_usage_logs WHERE id = $1';
     const params: any[] = [id];
     
     // 非管理员只能查看自己的历史
@@ -293,20 +305,18 @@ router.get('/dashboard', authenticateUser, async (req: Request, res: Response) =
     // 获取今日统计
     const todayStatsResult = await pool.query(
       `SELECT 
-        COUNT(*) as request_count,
-        COALESCE(SUM(tokens_input + tokens_output), 0) as token_count
-       FROM chat_history
-       WHERE user_id = $1 AND DATE(created_at) = CURRENT_DATE`,
+        COUNT(*) as request_count
+       FROM api_usage_logs
+       WHERE user_id = $1 AND created_at::date = CURRENT_DATE AT TIME ZONE 'Asia/Shanghai'`,
       [user.userId]
     );
     
     // 获取本月统计
     const monthStatsResult = await pool.query(
       `SELECT 
-        COUNT(*) as request_count,
-        COALESCE(SUM(tokens_input + tokens_output), 0) as token_count
-       FROM chat_history
-       WHERE user_id = $1 AND created_at >= DATE_TRUNC('month', NOW())`,
+        COUNT(*) as request_count
+       FROM api_usage_logs
+       WHERE user_id = $1 AND created_at >= DATE_TRUNC('month', CURRENT_DATE)`,
       [user.userId]
     );
     
@@ -319,8 +329,8 @@ router.get('/dashboard', authenticateUser, async (req: Request, res: Response) =
     // 获取最近活动
     const recentActivityResult = await pool.query(
       `SELECT 
-        request_type, status, created_at
-       FROM chat_history
+        endpoint, method, status_code, duration_ms, created_at
+       FROM api_usage_logs
        WHERE user_id = $1
        ORDER BY created_at DESC
        LIMIT 5`,
@@ -330,8 +340,8 @@ router.get('/dashboard', authenticateUser, async (req: Request, res: Response) =
     res.json({
       success: true,
       dashboard: {
-        today: todayStatsResult.rows[0],
-        thisMonth: monthStatsResult.rows[0],
+        today: { request_count: parseInt(todayStatsResult.rows[0]?.request_count || '0') },
+        thisMonth: { request_count: parseInt(monthStatsResult.rows[0]?.request_count || '0') },
         apiKeyCount: parseInt(apiKeyCountResult.rows[0].count),
         recentActivity: recentActivityResult.rows,
       },

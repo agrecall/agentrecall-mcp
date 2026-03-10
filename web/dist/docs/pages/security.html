@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security - AgentRecall Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .security-layer {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .security-layer h4 {
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+        .sanitization-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .sanitization-table th, .sanitization-table td {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        .sanitization-table th {
+            background: var(--bg-tertiary);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <a href="/" class="brand-main">
+                    <span>🤖</span>
+                    AgentRecall
+                </a>
+                <a href="/docs/" class="brand-doc">Doc</a>
+            </div>
+            <div class="navbar-nav">
+                <a href="../index.html" class="nav-link">Docs</a>
+                <a href="quick-start.html" class="nav-link">Quick Start</a>
+                <a href="api-reference.html" class="nav-link">API Reference</a>
+                <a href="security.html" class="nav-link active">Security</a>
+                <a href="../../admin/" class="nav-link primary">Get Started</a>
+            </div>
+            <div class="navbar-controls">
+                <select class="lang-selector" id="lang-selector">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                    <option value="zht">繁體中文</option>
+                </select>
+                <button class="control-btn" id="theme-toggle" title="Toggle Theme">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="doc-container">
+        <aside class="doc-sidebar">
+            <h3>On This Page</h3>
+            <ul>
+            </ul>
+        </aside>
+
+        <main class="doc-content">
+            <h1>Security</h1>
+            <p>AgentRecall implements multiple layers of security to protect sensitive data.</p>
+
+            <h2 id="overview">Overview</h2>
+            <p>Security is a core design principle of AgentRecall. We implement:</p>
+            <ul>
+                <li>Three-layer sanitization (client + server)</li>
+                <li>API key authentication</li>
+                <li>Rate limiting</li>
+                <li>HTTPS encryption</li>
+            </ul>
+
+            <h2 id="sanitization">Three-Layer Sanitization</h2>
+            <p>All data submitted to AgentRecall goes through three layers of sanitization:</p>
+
+            <div class="security-layer">
+                <h4>Layer 1: Regex Sanitization</h4>
+                <p>Pattern-based detection and replacement of sensitive data:</p>
+                <table class="sanitization-table">
+                    <tr><th>Pattern Type</th><th>Example</th><th>Replaced With</th></tr>
+                    <tr><td>API Keys</td><td>sk-abc123...</td><td>{API_KEY}</td></tr>
+                    <tr><td>Email</td><td>user@example.com</td><td>{EMAIL}</td></tr>
+                    <tr><td>IP Address</td><td>192.168.1.1</td><td>{IP_ADDRESS}</td></tr>
+                    <tr><td>JWT Token</td><td>eyJhbG...</td><td>{JWT_TOKEN}</td></tr>
+                    <tr><td>Passwords</td><td>password=secret</td><td>{REDACTED}</td></tr>
+                </table>
+            </div>
+
+            <div class="security-layer">
+                <h4>Layer 2: Structure Sanitization</h4>
+                <p>JSON-aware sanitization that preserves structure while replacing sensitive values:</p>
+                <ul>
+                    <li>Detects sensitive field names (password, secret, token, key)</li>
+                    <li>Replaces values with type indicators</li>
+                    <li>Preserves JSON structure for readability</li>
+                </ul>
+            </div>
+
+            <div class="security-layer">
+                <h4>Layer 3: Entropy Detection</h4>
+                <p>Shannon entropy analysis to detect high-entropy strings (likely secrets):</p>
+                <ul>
+                    <li>Calculates entropy for strings 32+ characters</li>
+                    <li>Entropy threshold: 4.5</li>
+                    <li>Replaces high-entropy strings with {HIGH_ENTROPY_LEN_N}</li>
+                </ul>
+            </div>
+
+            <h2 id="client-server">Client + Server Protection</h2>
+            <p>Double sanitization ensures maximum protection:</p>
+            <ol>
+                <li><strong>Client-side</strong>: Sanitize before sending (sensitive data never leaves local)</li>
+                <li><strong>Server-side</strong>: Sanitize again as fallback protection</li>
+            </ol>
+            <p>This "defense in depth" approach ensures that even if client-side sanitization is skipped, server-side sanitization will catch sensitive data.</p>
+
+            <h2 id="authentication">Authentication</h2>
+            <h3>MCP Interface</h3>
+            <p>Uses <code>x-api-key</code> header for authentication:</p>
+            <pre><code>x-api-key: ak_YOUR_API_KEY</code></pre>
+
+            <h3>Admin Panel</h3>
+            <p>Uses JWT tokens obtained through email/password login.</p>
+
+            <h2>Best Practices</h2>
+            <ul>
+                <li>Always sanitize data client-side before submission</li>
+                <li>Use environment variables for API keys</li>
+                <li>Rotate API keys periodically</li>
+                <li>Use HTTPS for all requests</li>
+            </ul>
+        </main>
+    </div>
+
+    <script src="../i18n.js"></script>
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const html = document.documentElement;
+        
+        var pageTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', pageTheme);
+        themeIcon.textContent = pageTheme === 'dark' ? '☀️' : '🌙';
+        
+        themeToggle.addEventListener('click', () => {
+            pageTheme = pageTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', pageTheme);
+            localStorage.setItem('theme', pageTheme);
+            themeIcon.textContent = pageTheme === 'dark' ? '☀️' : '🌙';
+        });
+    </script>
+</body>
+</html>

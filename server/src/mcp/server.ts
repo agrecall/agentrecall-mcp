@@ -14,7 +14,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { tools, toolHandlers, ToolName } from './tools.js';
-import { verifyApiKey } from '../api/apikeys.js';
+import { verifyApiKey, logApiKeyUsage } from '../api/apikeys.js';
 
 // MCP 协议版本
 const MCP_PROTOCOL_VERSION = '2024-11-05';
@@ -412,6 +412,8 @@ export function createMCPRouter(): Router {
   // POST 端点（用于 STDIO 模式和 SSE 消息）
   // ============================================
   router.post('/', async (req: Request, res: Response) => {
+    const startTime = Date.now();
+    
     try {
       // API Key 验证
       const apiKey = req.headers['x-api-key'] as string;
@@ -435,6 +437,20 @@ export function createMCPRouter(): Router {
           return handleJSONRPCRequest(request);
         });
         const responses = await Promise.all(requestsWithApiKey);
+        
+        // 记录 API Key 使用
+        if ((req as any).apiKey && body && body.length > 0) {
+          const method = body[0]?.method || 'batch';
+          await logApiKeyUsage(
+            (req as any).apiKey.id,
+            (req as any).apiKey.user_id,
+            method,
+            'POST',
+            200,
+            Date.now() - startTime
+          );
+        }
+        
         return res.json(responses);
       }
       
@@ -445,6 +461,19 @@ export function createMCPRouter(): Router {
       
       // 单请求
       const response = await handleJSONRPCRequest(body);
+      
+      // 记录 API Key 使用
+      if ((req as any).apiKey && body && body.method) {
+        await logApiKeyUsage(
+          (req as any).apiKey.id,
+          (req as any).apiKey.user_id,
+          body.method,
+          'POST',
+          200,
+          Date.now() - startTime
+        );
+      }
+      
       return res.json(response);
     } catch (error) {
       console.error(JSON.stringify({
@@ -470,6 +499,7 @@ export function createMCPRouter(): Router {
   // ============================================
   router.post('/:clientId', async (req: Request, res: Response) => {
     const { clientId } = req.params;
+    const startTime = Date.now();
     
     try {
       // API Key 验证
@@ -488,11 +518,38 @@ export function createMCPRouter(): Router {
         const responses = await Promise.all(
           body.map(request => handleJSONRPCRequest(request, clientId))
         );
+        
+        // 记录 API Key 使用
+        if ((req as any).apiKey && body && body.length > 0) {
+          const method = body[0]?.method || 'batch';
+          await logApiKeyUsage(
+            (req as any).apiKey.id,
+            (req as any).apiKey.user_id,
+            method,
+            'POST',
+            200,
+            Date.now() - startTime
+          );
+        }
+        
         return res.json(responses);
       }
       
       // 单请求
       const response = await handleJSONRPCRequest(body, clientId);
+      
+      // 记录 API Key 使用
+      if ((req as any).apiKey && body && body.method) {
+        await logApiKeyUsage(
+          (req as any).apiKey.id,
+          (req as any).apiKey.user_id,
+          body.method,
+          'POST',
+          200,
+          Date.now() - startTime
+        );
+      }
+      
       return res.json(response);
     } catch (error) {
       console.error(JSON.stringify({
