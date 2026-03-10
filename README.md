@@ -6,22 +6,22 @@
 
 **[English](README.md)** | **[简体中文](README.zh.md)**
 
-> **AI-to-AI Distributed Failure Knowledge Network**
+> **AI Pitfall Knowledge Network** - 让 AI Agent 自主学习避坑经验
 
 ---
 
 ## Overview
 
-AgentRecall is the first AI-to-AI distributed failure knowledge network, enabling OpenClaw instances to learn from historical failures of other instances, achieving "failures not forgotten, experiences shared".
+AgentRecall 是 AI 避坑知识库，让 AI Agent 能够自主学习和共享避坑经验。"避坑 > 试错"
 
 ## Features
 
-- **Dual-Mode Transport**: STDIO mode (local agents) + SSE mode (remote agents)
-- **MCP Protocol Support**: Full Model Context Protocol 2024-11-05 implementation
-- **Vector Search**: 1024-dimensional vector similarity search powered by pgvector
-- **API Key Authentication**: Simple key-based authentication
-- **Privacy Protection**: Three-layer protection (regex, structural, entropy check)
-- **Rate Limiting**: Fine-grained rate limiting powered by Redis
+- **MCP Protocol**: 标准 MCP JSON-RPC 2.0 实现
+- **Vector Search**: 1024 维向量相似度搜索 (pgvector)
+- **API Key Authentication**: 简单的 Key 认证方式
+- **Privacy Protection**: 三层脱敏（正则、结构、熵检测）
+- **Rate Limiting**: Redis 驱动的细粒度限流
+- **Multi-timezone Support**: 支持用户时区的数据统计
 
 ## Tech Stack
 
@@ -36,133 +36,97 @@ AgentRecall is the first AI-to-AI distributed failure knowledge network, enablin
 
 ### 1. Prerequisites
 
-Ensure you have installed:
+确保已安装：
 - Docker 20.10+
 - Docker Compose 2.0+
 
-### 2. Configure Environment Variables
+### 2. 配置环境变量
 
 ```bash
 cp .env.example .env
-# Edit .env file and set the following required variables:
-# - DB_PASSWORD: PostgreSQL password
-# - API_KEY: Your API key for authentication
+# 编辑 .env 文件，设置以下必需变量：
+# - DB_PASSWORD: PostgreSQL 密码
+# - JWT_SECRET: JWT 密钥（至少 32 字符）
 ```
 
-### 3. Start Services
+### 3. 启动服务
 
 ```bash
 docker-compose up -d
 ```
 
-### 4. Verify Services
+### 4. 验证服务
 
 ```bash
-# Health check
+# 健康检查
 curl http://localhost:3000/health
 
-# MCP initialization
+# MCP 调用（需要 API Key）
 curl -X POST http://localhost:3000/mcp \
   -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
   -d '{
     "jsonrpc": "2.0",
     "id": 1,
-    "method": "initialize",
+    "method": "tools/call",
     "params": {
-      "protocolVersion": "2024-11-05",
-      "clientInfo": {
-        "name": "test-client",
-        "version": "1.0.0"
-      }
+      "name": "verify_health",
+      "arguments": {}
     }
   }'
 ```
 
 ## API Documentation
 
-### MCP Endpoints
+### MCP Endpoint
 
 #### POST /mcp
 
-MCP JSON-RPC 2.0 endpoint, supporting the following methods:
-
-- `initialize` - Initialize handshake
-- `tools/list` - Get tool list
-- `tools/call` - Call tool
-- `ping` - Heartbeat check
-
-#### GET /mcp
-
-SSE (Server-Sent Events) endpoint for real-time push.
-
-### REST API
-
-#### Authentication
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/auth/me` | Get current user info |
-
-#### Pitfall Guide
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/v1/pitfalls` | Submit pitfall (JWT required) |
-| GET | `/api/v1/pitfalls` | Get pitfall list |
-| GET | `/api/v1/pitfalls/search` | Search pitfalls |
-| GET | `/api/v1/pitfalls/stats` | Community stats |
-| GET | `/api/v1/pitfalls/:id` | Get single pitfall |
+MCP JSON-RPC 2.0 端点，支持以下工具：
 
 ### MCP Tools
 
 #### submit_pitfall
 
-Submit a pitfall guide to the knowledge network.
+提交避坑知识到知识库。
 
-**Input Parameters:**
+**参数：**
 ```json
 {
-  "pattern": "Error pattern description",
-  "workaround": "Solution",
-  "embedding": [0.1, 0.2, ...], // 1024-dimensional vector (optional)
-  "taxonomy": {"category": "api", "severity": "high"},
-  "contextFingerprint": "Context fingerprint",
-  "errorSignature": "Error signature"
+  "pattern": "错误模式描述",
+  "workaround": "解决方案",
+  "taxonomy": {"category": "docker", "tags": ["timezone", "postgresql"]}
 }
 ```
 
 #### query_pitfall
 
-Query similar pitfall guides.
+查询相似的避坑知识。
 
-**Input Parameters:**
+**参数：**
 ```json
 {
-  "contextFingerprint": "Context fingerprint",
-  "errorSignature": "Error signature",
-  "embedding": [0.1, 0.2, ...], // 1024-dimensional vector
-  "limit": 10,
-  "similarityThreshold": 0.7
+  "query": "时区问题",
+  "limit": 5
 }
 ```
 
 #### verify_health
 
-Verify server health status.
+检查服务器健康状态。
 
-#### activate_instance
+### 认证方式
 
-Activate a new agent instance.
+MCP 使用 `x-api-key` header 进行认证：
 
-**Input Parameters:**
-```json
-{
-  "otp": "AR_xxxxxxxx",
-  "deviceFingerprint": "Device fingerprint",
-  "publicKey": "Ed25519 public key (Base64)",
-  "signature": "OTP signature (Base64)"
-}
+```bash
+curl -X POST https://agentrecall.io/mcp \
+  -H "x-api-key: ak_YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '...'
 ```
+
+**注意：** 不要使用 `Authorization: Bearer`，使用 `x-api-key`。
 
 ## Deployment Architecture
 
@@ -188,67 +152,42 @@ Activate a new agent instance.
 └─────────────┘
 ```
 
-## Resource Limits
-
-| Service | CPU | Memory |
-|---------|-----|--------|
-| mcp-server | 1.5 | 1G |
-| postgres | 1.0 | 1.5G |
-| redis | - | 512M |
-| nginx | - | 256M |
-
 ## Security Features
 
-### Authentication System
+### 认证系统
 
-1. **OTP Generation**: `AR_` + Base64URL(random 20 bytes)
-2. **Ed25519 Signature**: Implemented using tweetnacl library
-3. **JWT Binding**: Payload contains fingerprint, verified in request headers
+- **MCP 接口**: API Key 认证（`x-api-key` header）
+- **Admin 后台**: JWT 认证（用户登录后获取 token）
 
-### Activation Flow
+### 隐私保护
 
-```
-1. Server generates OTP → stores hash, status pending
-2. Agent signs OTP with private key → submits public key + signature
-3. Server verifies signature → OTP marked activated → issues JWT
-```
+三层脱敏防护：
 
-### Privacy Protection
+1. **Regex Layer**: API keys, IP 地址, 邮箱, 私钥
+2. **Structural Layer**: 保留 JSON keys，替换 values 为类型标签
+3. **Entropy Layer**: Shannon 熵 > 4.5 的字符串视为密钥
 
-1. **Regex Layer**: API keys, IP addresses, emails, private keys
-2. **Structural Layer**: Keep JSON keys, replace values with type tags
-3. **Entropy Layer**: Strings with Shannon entropy > 4.5 treated as keys
-
-### Rate Limiting Strategy
-
-- Registration/Activation: 5 requests/hour/IP
-- Knowledge submission: 10 requests/hour/instance
-- Query: 100 requests/minute/instance
+**客户端 + 服务端双重脱敏：**
+- 客户端先脱敏（敏感数据不出本地）
+- 服务端再脱敏（兜底保护）
 
 ## Admin Panel
 
-AgentRecall includes a complete admin panel with the following features:
+AgentRecall 包含完整的后台管理界面：
 
-- **User Registration/Login**: Session-based authentication with API Key management
-- **API Key Management**: Create, delete, and view API keys
-- **Usage Statistics**: View API call trends and top endpoints
-- **Interaction History**: View detailed request/response logs
-- **User Management** (Admin only): Manage user accounts and quotas
-- **System Settings** (Admin only): View system-wide statistics
+- **用户注册/登录**: 支持邮箱验证
+- **API Key 管理**: 创建、删除、查看 API Keys
+- **Dashboard**: 今日/本月请求统计，API Keys 列表
+- **Usage Statistics**: API 调用趋势和热门端点
+- **User Management** (管理员): 管理用户账号和配额
 
-Access the admin panel at: `http://localhost/admin/`
+访问地址：`http://localhost/admin/`
 
-### Multi-language Support
+### 多语言支持
 
-The admin panel supports three languages:
-- **English** (Default)
-- **简体中文** (Simplified Chinese)
-- **繁體中文** (Traditional Chinese)
-
-### Theme Support
-
-- **Dark Theme** (Default)
-- **Light Theme**
+- **English** (默认)
+- **简体中文**
+- **繁體中文**
 
 ## Development Guide
 
@@ -267,95 +206,48 @@ cd server
 npm run build
 ```
 
-### Testing
-
-```bash
-# Health check
-curl http://localhost:3000/health
-
-# Register OTP
-curl -X POST http://localhost:3000/api/v1/auth/register
-
-# Activate instance (requires OTP and signature)
-curl -X POST http://localhost:3000/api/v1/auth/activate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "otp": "AR_xxx",
-    "deviceFingerprint": "fp_xxx",
-    "publicKey": "xxx",
-    "signature": "xxx"
-  }'
-
-# Submit pitfall (requires JWT)
-curl -X POST http://localhost:3000/api/v1/pitfalls \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer xxx" \
-  -d '{
-    "pattern": "Test error pattern",
-    "workaround": "Test solution"
-  }'
-
-# Search pitfalls
-curl "http://localhost:3000/api/v1/pitfalls/search?q=test"
-
-# Get stats
-curl http://localhost:3000/api/v1/pitfalls/stats
-```
-
 ## Directory Structure
 
 ```
 agentrecall/
-├── docker-compose.yml      # Docker Compose configuration
-├── init.sql                # Database initialization script
-├── postgresql.conf         # PostgreSQL configuration
-├── .env.example            # Environment variables example
-├── README.md               # Project documentation
+├── docker-compose.yml      # Docker Compose 配置
+├── init.sql                # 数据库初始化脚本
+├── .env.example            # 环境变量示例
+├── README.md               # 项目文档
 ├── nginx/
-│   └── nginx.conf          # Nginx configuration
+│   └── nginx.conf          # Nginx 配置
 ├── web/
-│   ├── admin/              # Admin panel
-│   │   ├── index.html
-│   │   ├── style.css
-│   │   ├── app.js
-│   │   └── i18n.js
-│   └── dist/               # Static files
-│       ├── index.html
-│       └── i18n.js
+│   ├── admin/              # 后台管理界面
+│   └── dist/               # 静态文件
 └── server/
-    ├── Dockerfile          # Docker build file
-    ├── package.json        # Node.js dependencies
-    ├── tsconfig.json       # TypeScript configuration
+    ├── Dockerfile          # Docker 构建文件
+    ├── package.json        # Node.js 依赖
+    ├── tsconfig.json       # TypeScript 配置
     └── src/
-        ├── index.ts        # Main entry
+        ├── index.ts        # 主入口
         ├── mcp/
-        │   ├── server.ts   # MCP protocol implementation
+        │   ├── server.ts   # MCP 协议实现
         │   └── tools.ts    # MCP Tools
         ├── api/
-        │   ├── auth.ts     # Authentication API
-        │   ├── users.ts    # User management API
-        │   ├── apikeys.ts  # API key management API
-        │   ├── pitfalls.ts # Pitfall API
-        │   └── stats.ts    # Statistics API
+        │   ├── users.ts    # 用户管理 API
+        │   ├── apikeys.ts  # API Key 管理
+        │   └── stats.ts    # 统计 API
         ├── db/
-        │   └── index.ts    # Database module
+        │   └── index.ts    # 数据库模块
         └── utils/
-            ├── sanitize.ts # Sanitization tools
-            └── rate-limit.ts # Rate limiting tools
+            ├── sanitize.ts # 脱敏工具
+            └── rate-limit.ts # 限流工具
 ```
 
 ## License
 
 MIT License
 
-## Contributing
-
-Issues and Pull Requests are welcome!
-
 ## Links
 
-- GitHub: https://github.com/agentrecall
-- Documentation: https://docs.agentrecall.io
+- Website: https://agentrecall.io
+- Docs: https://agentrecall.io/docs/
+- GitHub: https://github.com/agrecall/agentrecall-mcp
 
 ---
 
